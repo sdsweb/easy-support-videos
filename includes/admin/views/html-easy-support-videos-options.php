@@ -1,0 +1,40 @@
+<div class="wrap about-wrap easy-support-videos-wrap easy-support-videos-options-wrap">
+	<h1><?php _e( 'Easy Support Videos Options', 'easy-support-videos' ); ?></h1>
+
+	<?php do_action( 'easy_support_videos_notifications' ); ?>
+	<?php do_action( 'easy_support_videos_options_notifications' ); ?>
+
+	<?php
+		settings_errors( 'general' ); // General Settings Errors
+		settings_errors( Easy_Support_Videos_Options::$option_name ); // Easy Support Videos Settings Errors
+	?>
+
+	<form method="post" action="options.php" enctype="multipart/form-data" id="easy-support-videos-options-form">
+		<?php settings_fields( Easy_Support_Videos_Options::$option_name ); ?>
+
+		<div id="easy-support-videos-options-roles-settings" class="easy-support-videos-options-settings easy-support-videos-options-roles-settings">
+			<?php
+				/**
+				 * Easy Support Videos Roles Settings
+				 */
+				do_settings_sections( Easy_Support_Videos_Options::$option_name . '_roles' );
+			?>
+		</div>
+
+		<div id="easy-support-videos-options-uninstall-settings" class="easy-support-videos-options-settings easy-support-videos-options-uninstall-settings">
+			<?php
+				/**
+				 * Easy Support Videos Uninstall Settings
+				 */
+				do_settings_sections( Easy_Support_Videos_Options::$option_name . '_uninstall' );
+			?>
+		</div>
+
+		<?php do_action( 'easy_support_videos_settings' ); ?>
+
+		<p class="submit">
+			<?php submit_button( __( 'Save Options', 'easy-support-videos' ), 'primary', 'submit', false ); ?>
+			<?php submit_button( __( 'Restore Defaults', 'easy-support-videos' ), 'secondary', Easy_Support_Videos_Options::$option_name . '[reset]', false ); ?>
+		</p>
+	</form>
+</div>

@@ -1,0 +1,112 @@
+/**
+ * Easy Support Videos Admin Options
+ */
+
+/**
+ * Options
+ */
+.easy-support-videos-wrap h2 {
+	text-align: left;
+}
+
+/* Checkboxes */
+.easy-support-videos-toggle-checkbox input[type=checkbox] {
+	display: none;
+}
+
+.easy-support-videos-toggle-checkbox {
+	width: 112px;
+	height: 26px;
+	background: #fff;
+	margin: 0 0 10px;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	border-radius: 5px;
+	position: relative;
+
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.easy-support-videos-toggle-checkbox:before {
+	content: attr(data-label-left);
+	width: 50%;
+	padding: 0;
+
+	font-size: 14px;
+	line-height: 26px;
+	text-transform: uppercase;
+	text-align: center;
+
+	color: #fff;
+	background: #0074a2;
+
+	position: absolute;
+	left: 0;
+	z-index: 0;
+
+	border-radius: 4px 0 0 4px;
+
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.easy-support-videos-toggle-checkbox:after {
+	content: attr(data-label-right);
+	width: 50%;
+	font-size: 14px;
+	line-height: 26px;
+	color: #666;
+	position: absolute;
+	right: 0;
+	z-index: 0;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.easy-support-videos-toggle-checkbox label {
+	display: block;
+	width: 56px;
+	height: 26px;
+
+	-webkit-border-radius: 4px 2px 2px 4px;
+	-moz-border-radius: 4px 2px 2px 4px;
+	-ms-border-radius: 4px 2px 2px 4px;
+	border-radius: 4px 2px 2px 4px;
+
+	-webkit-transition: all .25s ease;
+	-moz-transition: all .25s ease;
+	-o-transition: all .25s ease;
+	-ms-transition: all .25s ease;
+	transition: all .25s ease;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+
+	text-align: center;
+	line-height: 21px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #777;
+	text-shadow: 1px 1px 0 #fff;
+
+	-webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
+	background: #fffffc;
+}
+
+.easy-support-videos-toggle-checkbox input[type=checkbox]:checked + label {
+	left: 56px;
+
+	-webkit-border-radius: 2px 4px 4px 2px;
+	-moz-border-radius: 2px 4px 4px 2px;
+	-ms-border-radius: 2px 4px 4px 2px;
+	border-radius: 2px 4px 4px 2px;
+}

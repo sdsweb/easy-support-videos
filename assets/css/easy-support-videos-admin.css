@@ -1,0 +1,325 @@
+/**
+ * Easy Support Videos Admin
+ */
+
+/**
+ * General
+ */
+.easy-support-videos-wrap *,
+.easy-support-videos-wrap *:before,
+.easy-support-videos-wrap *:after {
+	max-width: 100%;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	/* Ensure that all long words are broken up so they do not exceed the width of their container elements. */
+	-ms-word-wrap: break-word;
+	word-wrap: break-word;
+}
+
+.easy-support-videos-wrap img,
+.easy-support-videos-wrap iframe {
+	height: auto;
+	vertical-align: top;
+}
+
+.easy-support-videos-wrap iframe,
+.easy-support-videos-wrap object,
+.easy-support-videos-wrap embed {
+	min-height: 320px;
+	height: auto;
+}
+.easy-support-videos-wrap .fluid-width-video-wrapper iframe,
+.easy-support-videos-wrap .fluid-width-video-wrapper object,
+.easy-support-videos-wrap .fluid-width-video-wrapper embed {
+	min-height: 0;
+}
+
+.easy-support-videos-wrap #easy-support-videos-sidebar p {
+	font-size: 1em;
+	line-height: 1.4em;
+}
+
+
+
+/**
+ * Flexbox
+ */
+.easy-support-videos-flex {
+	width: 100%;
+	margin: auto;
+
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-moz-flex-flow: row wrap;
+	-ms-flex-flow: row wrap;
+	-webkit-flex-flow: row wrap;
+	flex-flow: row wrap;
+	-moz-justify-content: space-around;
+	-ms-justify-content: space-around;
+	-webkit-justify-content: space-around;
+	justify-content: space-around;
+	-moz-align-content: flex-start;
+	-ms-align-content: flex-start;
+	-webkit-align-content: flex-start;
+	align-content: flex-start;
+	-ms-flex-pack: end;
+}
+
+.easy-support-videos-flex .easy-support-videos-col {
+	width: 100%;
+	position: relative;
+}
+
+/* Generic */
+.easy-support-videos-flex-1-columns .easy-support-videos-col {
+	width: 100%;
+}
+
+.easy-support-videos-flex-2-columns .easy-support-videos-col {
+	width: 50%;
+}
+
+.easy-support-videos-flex-3-columns .easy-support-videos-col {
+	width: 33.333%;
+}
+
+.easy-support-videos-flex-4-columns .easy-support-videos-col {
+	width: 25%;
+}
+
+.easy-support-videos-flex-5-columns .easy-support-videos-col {
+	width: 20%;
+}
+
+.easy-support-videos-flex-6-columns .easy-support-videos-col {
+	width: 16.667%;
+}
+
+/* Specific */
+.easy-support-videos-col.easy-support-videos-col.easy-support-videos {
+	width: 66.667%;
+	padding-right: 1rem;
+}
+
+.easy-support-videos-col.easy-support-videos-sidebar {
+	width: 33.333%;
+	padding-top: 2rem;
+	padding-left: 1rem;
+}
+
+
+/**
+ * Status Message
+ */
+#easy-support-videos-status-message {
+	max-width: 320px;
+	padding: 1rem 2.5rem 1rem 1rem;
+	background: #fff;
+	border-left: 5px solid #3bb1dc;
+	box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+	position: fixed;
+	right: 2rem;
+	bottom: -10rem;
+	z-index: 1;
+	-webkit-transition: bottom 0.25s ease-out;
+	transition: bottom 0.25s ease-out;
+}
+
+#easy-support-videos-status-message.easy-support-videos-is-active {
+	right: 2rem;
+	bottom: 2rem;
+}
+
+#easy-support-videos-status-message-message {
+	font-size: 0.875rem;
+	display: inline-block;
+}
+
+#easy-support-videos-status-message-close-wrap {
+	position: absolute;
+	top: 1rem;
+	right: 0.75rem;
+}
+
+#easy-support-videos-status-message-close {
+	color: #3c639a;
+	text-decoration: none;
+}
+
+#easy-support-videos-status-message-close:focus {
+	box-shadow: none;
+}
+
+#easy-support-videos-status-message-close .dashicons {
+	font-size: 1.125rem;
+}
+
+
+/**
+ * Spinners
+ */
+.easy-support-videos-wrap .easy-support-videos-spinner {
+	margin: 0 0 0 0.25em;
+	display: inline-block;
+	float: none;
+}
+
+
+/**
+ * Insert
+ */
+#easy-support-videos-insert-video {
+	padding: 2rem 1rem 1rem 0;
+	border-bottom: 1px solid #ccc;
+}
+
+#easy-support-videos-insert-video-url {
+	padding: 0.5rem;
+}
+
+#easy-support-videos-insert-video-button {
+	margin-top: 0.3rem;
+}
+
+#easy-support-videos-insert-video-description .easy-support-videos-description {
+	margin-top: 1em;
+}
+
+
+/**
+ * Videos
+ */
+#easy-support-videos-videos {
+	padding: 2rem 0;
+}
+
+#easy-support-videos-insert-video + #easy-support-videos-videos {
+	padding-top: 1rem;
+}
+
+#easy-support-videos-videos .easy-support-video {
+	padding: 1rem 0;
+	position: relative;
+}
+
+#easy-support-videos-videos .easy-support-video:first-of-type {
+	padding-top: 0;
+}
+
+#easy-support-videos-videos .easy-support-video:last-of-type {
+	padding-bottom: 0;
+}
+
+#easy-support-videos-videos .easy-support-video-title {
+	font-weight: bold;
+	font-size: 1.125rem;
+	line-height: 1.25em;
+}
+
+
+/**
+ * Edit
+ */
+#easy-support-videos-videos .easy-support-videos-video-title {
+	width: 90%;
+	padding: 0.5rem;
+	font-weight: bold;
+	font-size: 1.125rem;
+}
+
+#easy-support-videos-videos .easy-support-videos-video-delete {
+	color: #a00;
+	display: none;
+}
+
+#easy-support-videos-videos .easy-support-video-title:hover .easy-support-videos-video-delete {
+	display: inline-block;
+}
+
+
+/**
+ * Delete
+ */
+#easy-support-videos-videos .easy-support-video.easy-support-videos-is-active .easy-support-videos-video-spinner {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background-color: #ccc;
+	background-position: center;
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.easy-support-videos-video-delete {
+	text-decoration: none;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.easy-support-videos-video-delete:focus {
+	box-shadow: none;
+}
+
+
+/**
+ * Sidebar
+ */
+#easy-support-videos-sidebar-inner {
+	min-height: 520px;
+	margin: 1rem;
+	padding: 1rem 1.5rem;
+	background: #e6e6e6;
+}
+
+.easy-support-videos-sidebar-item {
+	padding: 1em 0;
+	border-bottom: 1px dashed #ccc;
+}
+
+.easy-support-videos-sidebar-item.empty {
+	padding: 0;
+}
+
+.easy-support-videos-sidebar-item:last-child,
+.easy-support-videos-sidebar-item.empty {
+	border-bottom: none;
+}
+
+.easy-support-videos-sidebar-item-branding,
+.easy-support-videos-sidebar-item-rate {
+	margin: 1rem;
+	padding: 0;
+	font-size: 0.93333em;
+}
+
+.easy-support-videos-sidebar-item-branding {
+	padding: 0 0 1rem;
+}
+
+
+/**
+ * Sidebar Edit
+ */
+#easy-support-videos-option-sidebar-message {
+	padding: 0.5rem;
+	background: #e6e6e6;
+	font-size: 1em;
+}
+
+#easy-support-videos-option-sidebar-message:focus,
+#easy-support-videos-option-sidebar-message:active {
+	background: #fff;
+}
+
+
+/**
+ * Options
+ */
