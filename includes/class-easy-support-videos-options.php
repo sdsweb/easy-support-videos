@@ -58,25 +58,28 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			// If the Easy Support Videos option doesn't exist
 			if ( ! ( $easy_support_videos_option = get_option( self::$option_name ) ) )
 				// Add it now
-				add_option( self::$option_name, self::get_option_defaults() );
+				add_option( self::$option_name, self::get_options_defaults() );
 		}
 
 		/**
 		 * This function sanitizes the option values before they are stored in the database.
 		 */
 		public function sanitize_option( $value ) {
+			// Grab the raw value before sanitizing
+			$raw_value = $value;
+
 			// Grab the Easy Support Videos options
 			$easy_support_videos_options = self::get_options();
 
 			// Grab Easy Support Videos option defaults
-			$easy_support_videos_option_defaults = self::get_option_defaults();
+			$easy_support_videos_options_defaults = self::get_options_defaults();
 
 			/*
 			 * Merge the option values with the defaults
 			 */
-			$easy_support_videos_options['roles'] = wp_parse_args( $easy_support_videos_options['roles'], $easy_support_videos_option_defaults['roles'] ); // Roles
-			$easy_support_videos_options['sidebar'] = wp_parse_args( $easy_support_videos_options['sidebar'], $easy_support_videos_option_defaults['sidebar'] ); // Sidebar
-			$easy_support_videos_options['uninstall'] = wp_parse_args( $easy_support_videos_options['uninstall'], $easy_support_videos_option_defaults['uninstall'] ); // Uninstall
+			$easy_support_videos_options['roles'] = wp_parse_args( $easy_support_videos_options['roles'], $easy_support_videos_options_defaults['roles'] ); // Roles
+			$easy_support_videos_options['sidebar'] = wp_parse_args( $easy_support_videos_options['sidebar'], $easy_support_videos_options_defaults['sidebar'] ); // Sidebar
+			$easy_support_videos_options['uninstall'] = wp_parse_args( $easy_support_videos_options['uninstall'], $easy_support_videos_options_defaults['uninstall'] ); // Uninstall
 
 			/*
 			 * Roles
@@ -84,8 +87,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 
 			// Reset to Defaults
 			if ( isset( $value['reset'] ) ) {
-				$value['roles']['edit'] = $easy_support_videos_option_defaults['roles']['edit']; // Roles - Edit
-				$value['roles']['read'] = $easy_support_videos_option_defaults['roles']['read']; // Roles - Read
+				$value['roles']['edit'] = $easy_support_videos_options_defaults['roles']['edit']; // Roles - Edit
+				$value['roles']['read'] = $easy_support_videos_options_defaults['roles']['read']; // Roles - Read
 			}
 			// Otherwise use the POSTed data or existing data
 			else {
@@ -94,7 +97,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			}
 
 			// If the specified roles do not match the defaults
-			if ( ! isset( $value['reset'] ) && $value['roles']['edit'] !== $easy_support_videos_option_defaults['roles']['edit'] || $value['roles']['read'] !== $easy_support_videos_option_defaults['roles']['read'] ) {
+			if ( ! isset( $value['reset'] ) && $value['roles']['edit'] !== $easy_support_videos_options_defaults['roles']['edit'] || $value['roles']['read'] !== $easy_support_videos_options_defaults['roles']['read'] ) {
 				// Grab the global WP_Roles instance
 				$wp_roles = wp_roles();
 
@@ -104,8 +107,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 				// If we have roles
 				if ( ! empty( $editable_roles ) ) {
 					// Flags
-					$is_edit_cap_valid = ( $value['roles']['edit'] !== $easy_support_videos_option_defaults['roles']['edit'] );
-					$is_read_cap_valid = ( $value['roles']['read'] !== $easy_support_videos_option_defaults['roles']['read'] );
+					$is_edit_cap_valid = ( $value['roles']['edit'] !== $easy_support_videos_options_defaults['roles']['edit'] );
+					$is_read_cap_valid = ( $value['roles']['read'] !== $easy_support_videos_options_defaults['roles']['read'] );
 
 					// Loop through roles
 					foreach ( array_keys( $editable_roles ) as $role ) {
@@ -130,12 +133,12 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 					// If the edit capability isn't valid
 					if ( ! $is_edit_cap_valid )
 						// Set the capability to the default
-						$value['roles']['edit'] = $easy_support_videos_option_defaults['roles']['edit'];
+						$value['roles']['edit'] = $easy_support_videos_options_defaults['roles']['edit'];
 
 					// If the read capability isn't valid
 					if ( ! $is_read_cap_valid )
 						// Set the capability to the default
-						$value['roles']['read'] = $easy_support_videos_option_defaults['roles']['read'];
+						$value['roles']['read'] = $easy_support_videos_options_defaults['roles']['read'];
 				}
 			}
 
@@ -153,12 +156,12 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 
 			// Reset to Defaults
 			if ( isset( $value['reset'] ) )
-				$value['uninstall']['data'] = $easy_support_videos_option_defaults['uninstall']['data']; // Uninstall - Data
+				$value['uninstall']['data'] = $easy_support_videos_options_defaults['uninstall']['data']; // Uninstall - Data
 			// Otherwise use the POSTed data or existing data
 			else
-				$value['uninstall']['data'] = ( isset( $value['uninstall']['data'] ) ) ? $easy_support_videos_option_defaults['uninstall']['data'] : false; // Uninstall - Data
+				$value['uninstall']['data'] = ( isset( $value['uninstall']['data'] ) ) ? $easy_support_videos_options_defaults['uninstall']['data'] : false; // Uninstall - Data
 
-			return apply_filters( 'easy_support_videos_options_sanitize_option', $value, $easy_support_videos_options, $easy_support_videos_option_defaults, $this );
+			return apply_filters( 'easy_support_videos_options_sanitize_option', $value, $raw_value, $easy_support_videos_options, $easy_support_videos_options_defaults, $this );
 		}
 
 
@@ -292,15 +295,15 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 		public static function get_options( $option_name = false ) {
 			// If an option name is passed, return that value otherwise default to Easy Support Videos options
 			if ( $option_name )
-				return apply_filters( 'easy_support_videos_options_' . $option_name, wp_parse_args( get_option( $option_name ), Easy_Support_Videos_Options::get_option_defaults( $option_name ) ), $option_name );
+				return apply_filters( 'easy_support_videos_options_' . $option_name, wp_parse_args( get_option( $option_name ), Easy_Support_Videos_Options::get_options_defaults( $option_name ) ), $option_name );
 
-			return apply_filters( 'easy_support_videos_options', wp_parse_args( get_option( Easy_Support_Videos_Options::$option_name ), Easy_Support_Videos_Options::get_option_defaults() ) );
+			return apply_filters( 'easy_support_videos_options', wp_parse_args( get_option( Easy_Support_Videos_Options::$option_name ), Easy_Support_Videos_Options::get_options_defaults() ) );
 		}
 
 		/**
 		 * This function returns the default option values for Easy Support Videos.
 		 */
-		public static function get_option_defaults( $option_name = false ) {
+		public static function get_options_defaults( $option_name = false ) {
 			$defaults = false;
 
 			// If an option name is passed, return that value otherwise default to Easy Support Videos options

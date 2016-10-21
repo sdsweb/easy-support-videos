@@ -10,6 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Easy Support Videos for embedding helpful tutorials, training videos, and screencasts in the Admin dashboard. Works with YouTube, Vimeo, Wistia, VideoPress, and more!
 
+
 == Description ==
 
 Easy Support Videos is great for WordPress consultants, trainers, and product owners to embed compatible oEmbed video into the admin dashboard of a WordPress website. Simply install the plugin, and copy/paste the video link into the admin page, and Easy Support Videos will elegantly display a list of videos for your user.
@@ -54,12 +55,8 @@ Any oEmbed compatible video. YouTube, Vimeo, Wistia, VideoPress, WordPress.tv an
 
 In the settings page of Easy Support Videos, you can control who can edit and view videos based on WordPress role.
 
-== Screenshots ==
-1. Easy Support Videos Page
-2. Customizable sidebar
-3. Options page
 
-See the video in our [Description](https://wordpress.org/plugins/easy-support-videos/) for a live demo.
+== Screenshots ==
 
 
 == Changelog ==
