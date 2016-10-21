@@ -95,7 +95,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
 
 			// Grab the Easy Support Videos option defaults
-			$easy_support_videos_option_defaults = Easy_Support_Videos_Options::get_option_defaults();
+			$easy_support_videos_options_defaults = Easy_Support_Videos_Options::get_options_defaults();
 
 			/*
 			 * Setup Easy Support Videos capabilities.
@@ -113,21 +113,21 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			);
 
 			// If the read option value is different than the default
-			if ( $easy_support_videos_options['roles']['read'] !== $easy_support_videos_option_defaults['roles']['read'] ) {
+			if ( $easy_support_videos_options['roles']['read'] !== $easy_support_videos_options_defaults['roles']['read'] ) {
 				$easy_support_videos_capabilities['read_post'] = $easy_support_videos_options['roles']['read'];
 				$easy_support_videos_capabilities['read_private_posts'] = $easy_support_videos_options['roles']['read'];
 			}
 
 			// Setup post type capabilities for Easy Support Videos
 			self::$post_type_capabilities[self::$easy_support_videos_post_type] = wp_parse_args( $easy_support_videos_capabilities, array(
-				'edit_post' => $easy_support_videos_option_defaults['roles']['edit'],
-				'delete_post' => $easy_support_videos_option_defaults['roles']['edit'],
-				'edit_posts' => $easy_support_videos_option_defaults['roles']['edit'],
-				'edit_others_posts'	 => $easy_support_videos_option_defaults['roles']['edit'],
-				'publish_posts' => $easy_support_videos_option_defaults['roles']['edit']
+				'edit_post' => $easy_support_videos_options_defaults['roles']['edit'],
+				'delete_post' => $easy_support_videos_options_defaults['roles']['edit'],
+				'edit_posts' => $easy_support_videos_options_defaults['roles']['edit'],
+				'edit_others_posts'	 => $easy_support_videos_options_defaults['roles']['edit'],
+				'publish_posts' => $easy_support_videos_options_defaults['roles']['edit']
 			) );
 
-			self::$post_type_capabilities = apply_filters( 'easy_support_videos_post_type_capabilities', self::$post_type_capabilities, $easy_support_videos_options, $easy_support_videos_option_defaults, $this );
+			self::$post_type_capabilities = apply_filters( 'easy_support_videos_post_type_capabilities', self::$post_type_capabilities, $easy_support_videos_options, $easy_support_videos_options_defaults, $this );
 
 
 			/*
@@ -176,7 +176,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
 
 			// Easy Support Videos Admin Page (directly after "Settings" which is located at position 80)
-			self::$easy_support_videos_menu_page = add_menu_page( apply_filters( 'easy_support_videos_menu_page_page_title', __( 'Support Videos', 'easy-support-videos' ), $this ), apply_filters( 'easy_support_videos_menu_page_menu_title', __( 'Support Videos', 'easy-support-videos' ), $this ), $easy_support_videos_options['roles']['read'], self::get_easy_support_video_menu_page(), array( $this, 'easy_support_videos_render' ), 'dashicons-format-video', '80.01000101' );
+			self::$easy_support_videos_menu_page = add_menu_page( apply_filters( 'easy_support_videos_menu_page_page_title', __( 'Support Videos', 'easy-support-videos' ), $this ), apply_filters( 'easy_support_videos_menu_page_menu_title', __( 'Support Videos', 'easy-support-videos' ), $this ), $easy_support_videos_options['roles']['read'], self::get_easy_support_videos_menu_page(), array( $this, 'easy_support_videos_render' ), apply_filters( 'easy_support_videos_menu_page_icon_url', 'dashicons-format-video', $this ), apply_filters( 'easy_support_videos_menu_page_position', '80.01000101', $this ) );
 		}
 
 		/**
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 */
 		public function admin_enqueue_scripts( $hook ) {
 			// Bail if we're not on the Easy Support Videos page
-			if ( $hook !== self::get_easy_support_video_menu_page( false ) )
+			if ( $hook !== self::get_easy_support_videos_menu_page( false ) )
 				return;
 
 			// Stylesheet
@@ -446,9 +446,9 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 
 		/**
 		 * This function returns the menu page. The optional $strip_prefix parameter allows the prefix
-		 * added by WordPress to be stripped
+		 * added by WordPress to be stripped.
 		 */
-		public static function get_easy_support_video_menu_page( $strip_prefix = true ) {
+		public static function get_easy_support_videos_menu_page( $strip_prefix = true ) {
 			return apply_filters( 'easy_support_videos_menu_page', ( $strip_prefix ) ? str_replace( self::$menu_page_prefix, '', self::$easy_support_videos_menu_page ) : self::$easy_support_videos_menu_page );
 		}
 
@@ -456,6 +456,12 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 * This function returns the WP_oEmbed object.
 		 */
 		public function get_wp_oembed_object() {
+			// Include the embed class
+			include_once ABSPATH . WPINC . '/embed.php';
+
+			// Include the WP_oEmbed class
+			include_once ABSPATH . WPINC . '/class-oembed.php';
+
 			// If the _wp_oembed_get_object() function exists
 			if ( function_exists( '_wp_oembed_get_object' ) )
 				return _wp_oembed_get_object();

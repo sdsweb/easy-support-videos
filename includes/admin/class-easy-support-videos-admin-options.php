@@ -82,7 +82,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 		 */
 		public function admin_menu() {
 			// Easy Support Videos Admin Options Page
-			self::$sub_menu_page = add_submenu_page( Easy_Support_Videos_Post_Types::get_easy_support_video_menu_page(), __( 'Options', 'easy-support-videos' ), __( 'Options', 'easy-support-videos' ), 'manage_options', self::get_sub_menu_page(), array( $this, 'render' ) );
+			self::$sub_menu_page = add_submenu_page( Easy_Support_Videos_Post_Types::get_easy_support_videos_menu_page(), __( 'Options', 'easy-support-videos' ), __( 'Options', 'easy-support-videos' ), 'manage_options', self::get_sub_menu_page(), array( $this, 'render' ) );
 		}
 
 		/**
