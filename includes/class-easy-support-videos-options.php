@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Options
  * @author Slocum Studio
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.0';
+		public $version = '1.0.1';
 
 		/**
 		 * @var string
@@ -48,6 +48,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			// Hooks
 			register_activation_hook( Easy_Support_Videos::plugin_file(), array( $this, 'activate' ) ); // Activate
 			add_filter( 'sanitize_option_' . self::$option_name, array( $this, 'sanitize_option' ) ); // Sanitize Easy Support Videos Option
+
+			// AJAX
 			add_action( 'wp_ajax_easy_support_videos_save_option', array( $this, 'wp_ajax_easy_support_videos_save_option' ) ); // Easy Support Videos Save Option
 		}
 

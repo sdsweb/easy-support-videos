@@ -81,6 +81,20 @@ if( ! class_exists( 'Easy_Support_Videos_Admin_Views' ) ) {
 		}
 
 		/**
+		 * This function renders the Easy Support Videos Sidebar Item Message template part.
+		 */
+		public static function sidebar_item_message() {
+			self::load_template( 'html-easy-support-videos-sidebar-item-message.php' );
+		}
+
+		/**
+		 * This function renders the Easy Support Videos Sidebar Item Rate template part.
+		 */
+		public static function sidebar_item_rate() {
+			self::load_template( 'html-easy-support-videos-sidebar-item-rate.php' );
+		}
+
+		/**
 		 * This function renders the Easy Support Videos Insert Video template part.
 		 */
 		public static function insert_video_template() {

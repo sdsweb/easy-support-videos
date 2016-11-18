@@ -9,21 +9,17 @@
 	<?php do_action( 'easy_support_videos_inner_before' ); ?>
 
 	<?php
-		// Add an edit nonce field
-		wp_nonce_field( 'easy_support_videos_edit', 'easy_support_videos_nonce_edit' );
+		// If the current user can edit Easy Support Videos
+		if ( $current_user_can_edit_easy_support_videos ) {
+			// Add an edit nonce field
+			wp_nonce_field( 'easy_support_videos_edit', 'easy_support_videos_nonce_edit' );
 
-		// Add a delete nonce field
-		wp_nonce_field( 'easy_support_videos_delete', 'easy_support_videos_nonce_delete' );
+			// Add a delete nonce field
+			wp_nonce_field( 'easy_support_videos_delete', 'easy_support_videos_nonce_delete' );
+		}
 
 		// Find Easy Support Videos
-		$easy_support_videos = new WP_Query( apply_filters( 'easy_support_videos_videos_args', array(
-			'post_type' => Easy_Support_Videos_Post_Types::$easy_support_videos_post_type,
-			'posts_per_page' => wp_count_posts( Easy_Support_Videos_Post_Types::$easy_support_videos_post_type )->publish,
-			'orderby' => array(
-				'menu_order' => 'ASC',
-				'date' => 'DESC'
-			)
-		) ) );
+		$easy_support_videos = new WP_Query( apply_filters( 'easy_support_videos_videos_args', Easy_Support_Videos_Post_Types::$query_args ) );
 
 		// If we have Easy Support Videos
 		if ( $easy_support_videos->have_posts() ) :
@@ -37,7 +33,7 @@
 
 				do_action( 'easy_support_videos_video_before', $post );
 	?>
-			<div <?php post_class( ( $current_user_can_edit_easy_support_videos ) ? 'easy-support-video easy-support-video-can-edit easy-support-video-' . $post_id : 'easy-support-video easy-support-video-' . $post_id ); ?> data-post-id="<?php echo $post_id; ?>">
+			<div <?php post_class( ( $current_user_can_edit_easy_support_videos ) ? 'easy-support-video easy-support-video-can-edit easy-support-video-' . $post_id : 'easy-support-video easy-support-video-' . $post_id ); ?> data-post-id="<?php echo $post_id; ?>" <?php do_action( 'easy_support_videos_video_data_attributes', $post ); // TODO: Change this to a function with a filter instead of an action like Conductor? ?>>
 				<?php do_action( 'easy_support_videos_video_inner_before', $post ); ?>
 
 				<?php
@@ -67,12 +63,12 @@
 							$post_id = ( int ) get_the_ID();
 					?>
 							<label for="easy-support-videos-video-<?php echo $post_id; ?>-title" class="screen-reader-text"><?php _e( 'Video Title:', 'easy-support-videos' ); ?></label>
-							<input id="easy-support-videos-video-<?php echo $post_id; ?>-title" class="easy-support-videos-input easy-support-videos-video-title easy-support-videos-video-<?php echo $post_id; ?>-title regular-text" name="easy-support-videos-video-<?php echo $post_id; ?>-title" type="text" value="<?php echo esc_attr( get_the_title() ); ?>" autocomplete="off" />
+							<input id="easy-support-videos-video-<?php echo $post_id; ?>-title" class="regular-text easy-support-videos-input easy-support-videos-video-title easy-support-videos-video-<?php echo $post_id; ?>-title" name="easy-support-videos-video-<?php echo $post_id; ?>-title" type="text" value="<?php echo esc_attr( get_the_title() ); ?>" autocomplete="off" />
 							<span id="easy-support-videos-video-<?php echo $post_id; ?>-title-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-title-spinner easy-support-videos-video-<?php echo $post_id; ?>-title-spinner"></span>
 							<a href="#" class="easy-support-videos-video-delete" title="<?php _e( 'Delete Video', 'easy-support-videos' ); ?>">
 								<span class="dashicons dashicons-dismiss"></span>
 							</a>
-							<input id="easy-support-videos-video-<?php echo $post_id; ?>-id" class="easy-support-videos-input easy-support-videos-input-hiden easy-support-videos-video-id easy-support-videos-post-id easy-support-videos-video-<?php echo $post_id; ?>-id" type="hidden" value="<?php echo $post_id; ?>" />
+							<input id="easy-support-videos-video-<?php echo $post_id; ?>-id" class="easy-support-videos-input easy-support-videos-input-hidden easy-support-videos-video-id easy-support-videos-post-id easy-support-videos-video-<?php echo $post_id; ?>-id" type="hidden" value="<?php echo $post_id; ?>" />
 					<?php
 						else:
 							the_title();

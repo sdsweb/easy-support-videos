@@ -77,7 +77,14 @@ var easy_support_videos = easy_support_videos || {};
 			/**
 			 * This function sets up AJAX data.
 			 */
-			setupData: function( data ) {
+			setupData: function( data, action, $el ) {
+				// Defaults
+				action = action || false;
+				$el = $el || false;
+
+				// Trigger the setup data event on the Easy Support Videos Backbone View element
+				Easy_Support_Videos_View.$el.trigger( 'esv-ajax-setup-data', [ data, action, $el ] );
+
 				return $.extend( data, this.data );
 			},
 			/**
@@ -114,12 +121,15 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Display success message
 					Easy_Support_Videos_View.ajax.displayResponseStatusMessage( response );
+
+					// Trigger the "all" event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-all', response );
 				},
 				/**
 				 * This function runs on a successful insert video AJAX request.
 				 */
 				insertVideo: function( response ) {
-					var $easy_support_videos_videos = Easy_Support_Videos_View.$el.find( '#easy-support-videos-videos' ),
+					var $easy_support_videos_videos = Easy_Support_Videos_View.$el.find( Easy_Support_Videos_View.videos_el_selector ),
 						$single_easy_support_videos = $easy_support_videos_videos.find( '.easy-support-video' ),
 						$video_url = Easy_Support_Videos_View.$el.find( '#easy-support-videos-insert-video-url' );
 
@@ -138,6 +148,9 @@ var easy_support_videos = easy_support_videos || {};
 					// Re-initialize FitVids
 					$easy_support_videos_videos.fitVids();
 
+					// Trigger the an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-insert-video', response );
+
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
 				},
@@ -147,6 +160,9 @@ var easy_support_videos = easy_support_videos || {};
 				editVideo: function( response ) {
 					// Update the current value data
 					Easy_Support_Videos_View.$el.find( '.easy-support-video[data-post-id="' + response.post_id + '"] .easy-support-videos-video-title' ).data( Easy_Support_Videos_View.current_value_data_key, response.title );
+
+					// Trigger the an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-edit-video', response );
 
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
@@ -158,6 +174,9 @@ var easy_support_videos = easy_support_videos || {};
 					// Remove the video
 					Easy_Support_Videos_View.$el.find( '.easy-support-video[data-post-id="' + response.post_id + '"]' ).remove();
 
+					// Trigger the an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-delete-video', response );
+
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
 				},
@@ -166,7 +185,10 @@ var easy_support_videos = easy_support_videos || {};
 				 */
 				editSidebarMessage: function( response ) {
 					// Update the current value data
-					Easy_Support_Videos_View.$el.find( '#easy-support-videos-option-sidebar-message' ).data( Easy_Support_Videos_View.current_value_data_key, response.value );
+					Easy_Support_Videos_View.$el.find( '#easy-support-videos-option-sidebar-message' ).data( Easy_Support_Videos_View.current_value_data_key, response.value ).val( response.value );
+
+					// Trigger the an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-edit-sidebar-message', response );
 
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
@@ -185,11 +207,17 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Display fail message
 					Easy_Support_Videos_View.ajax.displayResponseStatusMessage( response );
+
+					// Trigger the "all" event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-all', response );
 				},
 				/**
 				 * This function runs on a failed insert video AJAX request.
 				 */
 				insertVideo: function( response ) {
+					// Trigger an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-insert-video', response );
+
 					// Call the "all" fail function
 					Easy_Support_Videos_View.ajax.fail.all( response );
 				},
@@ -197,6 +225,9 @@ var easy_support_videos = easy_support_videos || {};
 				 * This function runs on a failed edit video AJAX request.
 				 */
 				editVideo: function( response ) {
+					// Trigger an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-edit-video', response );
+
 					// Call the "all" fail function
 					Easy_Support_Videos_View.ajax.fail.all( response );
 				},
@@ -204,8 +235,8 @@ var easy_support_videos = easy_support_videos || {};
 				 * This function runs on a failed delete video AJAX request.
 				 */
 				deleteVideo: function( response ) {
-					// Remove the video
-					Easy_Support_Videos_View.$el.find( '.easy-support-video[data-post-id="' + response.post_id + '"]' ).removeClass( easy_support_videos.spinner.active_css_classes );
+					// Trigger an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-delete-video', response );
 
 					// Call the "all" fail function
 					Easy_Support_Videos_View.ajax.fail.all( response );
@@ -255,7 +286,7 @@ var easy_support_videos = easy_support_videos || {};
 				data = this.ajax.setupData( {
 					nonce: this.$el.find( '#easy_support_videos_nonce_insert' ).val(),
 					url: video_url
-				} );
+				}, easy_support_videos.actions.insert );
 
 			// Prevent default
 			event.preventDefault();
@@ -277,13 +308,16 @@ var easy_support_videos = easy_support_videos || {};
 		/**
 		 * This function edits Easy Support Videos (delay 500ms).
 		 */
-		editVideo: _.debounce( function( event ) {
-			var self = this;
+		editVideo: _.debounce( function( event, $this, force ) {
+			// Defaults
+			$this = $this || $( event.currentTarget );
+			force = force || false;
 
-			var $this = $( event.currentTarget ),
-				current_value = $this.val(),
-				previous_value = $this.data( self.current_value_data_key ),
-				$parent = $this.parent(),
+			var self = this,
+				$title = ( ! $this.hasClass( 'easy-support-videos-video-title' ) ) ? $this.find( '.easy-support-videos-video-title' ) : $this,
+				current_value = $title.val(),
+				previous_value = $title.data( this.current_value_data_key ),
+				$parent = ( $this.hasClass( 'easy-support-videos-video-title' ) ) ? $this.parent() : $this,
 				$post_id = $parent.find( '.easy-support-videos-video-id' ),
 				post_id = $post_id.val(),
 				$spinner = $parent.find( '.easy-support-videos-video-title-spinner' ),
@@ -291,20 +325,20 @@ var easy_support_videos = easy_support_videos || {};
 					nonce: this.$el.find( '#easy_support_videos_nonce_edit' ).val(),
 					post_id: post_id,
 					title: current_value
-				} );
+				}, easy_support_videos.actions.edit, $this );
 
 			// Prevent default
 			event.preventDefault();
 
 			// Bail if the current value matches the previous value
-			if ( current_value === previous_value ) {
+			if ( ! force && current_value === previous_value ) {
 				return;
 			}
 
 			// Bail if the current value is empty
 			if ( ! current_value ) {
 				// Set the title back to the previous value
-				$this.val( previous_value );
+				$title.val( previous_value );
 
 				// Show a message
 				this.showMessage( easy_support_videos.l10n.video_title_empty );
@@ -321,8 +355,11 @@ var easy_support_videos = easy_support_videos || {};
 		/**
 		 * This function deletes Easy Support Videos.
 		 */
-		deleteVideo: function( event ) {
-			var $this = $( event.currentTarget ),
+		deleteVideo: function( event, $this ) {
+			// Defaults
+			$this = $this || $( event.currentTarget );
+
+			var self = this,
 				$post_id = $this.parent().find( '.easy-support-videos-video-id' ),
 				post_id = $post_id.val(),
 				$easy_support_video = $this.parents( '.easy-support-video' ),
@@ -330,7 +367,7 @@ var easy_support_videos = easy_support_videos || {};
 				data = this.ajax.setupData( {
 					nonce: this.$el.find( '#easy_support_videos_nonce_delete' ).val(),
 					post_id: post_id
-				} );
+				}, easy_support_videos.actions.delete, $this );
 
 			// Prevent default
 			event.preventDefault();
@@ -388,13 +425,14 @@ var easy_support_videos = easy_support_videos || {};
 		/**
 		 * This function edits the Easy Support Videos sidebar message(delay 500ms).
 		 */
-		editSidebarMessage: _.debounce( function( event ) {
-			var self = this;
+		editSidebarMessage: _.debounce( function( event, $this ) {
+			// Defaults
+			$this = $this || $( event.currentTarget );
 
-			var $this = $( event.currentTarget ),
+			var self = this,
 				current_value = $this.val(),
 				previous_value = $this.data( self.current_value_data_key ),
-				$parent = $this.parent(),
+				$parent = $this.parents( '.easy-support-videos-sidebar-item-message' ),
 				$option_name = $parent.find( '#easy-support-videos-sidebar-message-option-name' ),
 				option_name = $option_name.val(),
 				$option_group = $parent.find( '#easy-support-videos-sidebar-message-option-group' ),
@@ -405,7 +443,7 @@ var easy_support_videos = easy_support_videos || {};
 					option_name: option_name,
 					option_group: option_group,
 					value: current_value
-				} );
+				}, easy_support_videos.actions.save_option, $this );
 
 			// Prevent default
 			event.preventDefault();
@@ -432,8 +470,9 @@ var easy_support_videos = easy_support_videos || {};
 		 */
 		// Create a new instance of the Easy Support Videos Backbone View
 		Easy_Support_Videos_View = new easy_support_videos.Backbone.Views.Easy_Support_Videos();
+		easy_support_videos.Backbone.instances.views.easy_support_videos = Easy_Support_Videos_View;
 
 		// FitVids
-		$( '#easy-support-videos-videos' ).fitVids();
+		$( Easy_Support_Videos_View.videos_el_selector ).fitVids();
 	} );
 } )( jQuery );
