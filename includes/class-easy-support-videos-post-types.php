@@ -3,7 +3,7 @@
  * Easy Support Videos Post Types
  *
  * @class Easy_Support_Videos_Post_Types
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 
@@ -16,12 +16,17 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		/**
 		 * @var string
 		 */
-		public static $version = '1.0.0';
+		public static $version = '1.0.1';
 
 		/**
 		 * @var string
 		 */
 		public static $easy_support_videos_post_type = 'easy_support_videos';
+
+		/**
+		 * @var string
+		 */
+		public static $easy_support_videos_page_title = 'Support Videos';
 
 		/**
 		 * @var array
@@ -42,6 +47,11 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 * @var array
 		 */
 		public static $current_user_can = array();
+
+		/**
+		 * @var array
+		 */
+		public static $query_args = array();
 
 		/**
 		 * @var Easy_Support_Videos_Post_Types, Instance of the class
@@ -91,6 +101,9 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 * This function runs on initialization.
 		 */
 		public function init() {
+			// Easy Support Videos Page Title
+			self::$easy_support_videos_page_title = apply_filters( 'easy_support_videos_menu_page_page_title', __( 'Support Videos', 'easy-support-videos' ), $this );
+
 			// Grab the Easy Support Videos options
 			$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
 
@@ -109,7 +122,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				'delete_post' => $easy_support_videos_options['roles']['edit'],
 				'edit_posts' => $easy_support_videos_options['roles']['edit'],
 				'edit_others_posts'	 => $easy_support_videos_options['roles']['edit'],
-				'publish_posts' => $easy_support_videos_options['roles']['edit'],
+				'publish_posts' => $easy_support_videos_options['roles']['edit']
 			);
 
 			// If the read option value is different than the default
@@ -166,6 +179,16 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				//'map_meta_cap' => true,
 				'query_var' => false
 			), $this ) );
+
+			// Easy Support Videos query arguments
+			self::$query_args = apply_filters( 'easy_support_videos_query_args', array(
+				'post_type' => self::$easy_support_videos_post_type,
+				'posts_per_page' => wp_count_posts( self::$easy_support_videos_post_type )->publish,
+				'orderby' => array(
+					'menu_order' => 'ASC',
+					'date' => 'DESC'
+				)
+			), $this );
 		}
 
 		/**
@@ -176,7 +199,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
 
 			// Easy Support Videos Admin Page (directly after "Settings" which is located at position 80)
-			self::$easy_support_videos_menu_page = add_menu_page( apply_filters( 'easy_support_videos_menu_page_page_title', __( 'Support Videos', 'easy-support-videos' ), $this ), apply_filters( 'easy_support_videos_menu_page_menu_title', __( 'Support Videos', 'easy-support-videos' ), $this ), $easy_support_videos_options['roles']['read'], self::get_easy_support_videos_menu_page(), array( $this, 'easy_support_videos_render' ), apply_filters( 'easy_support_videos_menu_page_icon_url', 'dashicons-format-video', $this ), apply_filters( 'easy_support_videos_menu_page_position', '80.01000101', $this ) );
+			self::$easy_support_videos_menu_page = add_menu_page( self::$easy_support_videos_page_title, apply_filters( 'easy_support_videos_menu_page_menu_title', __( 'Support Videos', 'easy-support-videos' ), $this ), $easy_support_videos_options['roles']['read'], self::get_easy_support_videos_menu_page(), array( $this, 'easy_support_videos_render' ), apply_filters( 'easy_support_videos_menu_page_icon_url', 'dashicons-format-video', $this ), apply_filters( 'easy_support_videos_menu_page_position', '80.01000101', $this ) );
 		}
 
 		/**
@@ -278,6 +301,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_insert_wp_insert_post_before', $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
+
 			// Insert the new Easy Support Video
 			$post_id = wp_insert_post( apply_filters( 'wp_ajax_easy_support_videos_insert_args', array(
 				'post_title' => $title,
@@ -295,6 +320,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_insert_wp_insert_post_after', $post_id, $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
+
 			// Apply the the_content filter to the embed HTML
 			$html = apply_filters( 'the_content', $html );
 			$html = str_replace( ']]>', ']]&gt;', $html );
@@ -306,6 +333,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$status['html'] = $html;
 			$status['message'] = __( 'Video added to library', 'easy-support-videos' );
 			$status = apply_filters( 'wp_ajax_easy_support_videos_insert_success_status', $status, $post_id, $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
+
+			do_action( 'wp_ajax_easy_support_videos_insert_wp_send_json_success', $status, $post_id, $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
 
 			// Success
 			wp_send_json_success( $status );
@@ -359,6 +388,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_edit_wp_update_post_before', $post_id, $title, $this );
+
 			// Update the post
 			$post_id = wp_update_post( apply_filters( 'wp_ajax_easy_support_videos_edit_args', array(
 				'ID' => $post_id,
@@ -372,11 +403,15 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_edit_wp_update_post_after', $post_id, $title, $this );
+
 			// Update the status data
 			$status['post_id'] = $post_id;
 			$status['title'] = $title;
 			$status['message'] = __( 'Video updated.', 'easy-support-videos' );
 			$status = apply_filters( 'wp_ajax_easy_support_videos_edit_success_status', $status, $post_id, $title, $this );
+
+			do_action( 'wp_ajax_easy_support_videos_edit_wp_send_json_success', $status, $post_id, $title, $this );
 
 			// Success
 			wp_send_json_success( $status );
@@ -420,6 +455,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_delete_wp_delete_post_before', $post_id, $this );
+
 			// Delete the post
 			$post = wp_delete_post(  apply_filters( 'wp_ajax_easy_support_videos_delete_post_id', $post_id, $this ), true );
 
@@ -430,10 +467,14 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 				wp_send_json_error( $status );
 			}
 
+			do_action( 'wp_ajax_easy_support_videos_delete_wp_delete_post_after', $post, $post_id, $this );
+
 			// Update the status data
 			$status['post_id'] = $post_id;
 			$status['message'] = __( 'Video removed from library.', 'easy-support-videos' );
 			$status = apply_filters( 'wp_ajax_easy_support_videos_delete_success_status', $status, $post_id, $this );
+
+			do_action( 'wp_ajax_easy_support_videos_delete_wp_send_json_success', $status, $post, $post_id, $this );
 
 			// Success
 			wp_send_json_success( $status );
@@ -449,7 +490,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 * added by WordPress to be stripped.
 		 */
 		public static function get_easy_support_videos_menu_page( $strip_prefix = true ) {
-			return apply_filters( 'easy_support_videos_menu_page', ( $strip_prefix ) ? str_replace( self::$menu_page_prefix, '', self::$easy_support_videos_menu_page ) : self::$easy_support_videos_menu_page );
+			return apply_filters( 'easy_support_videos_menu_page', ( $strip_prefix ) ? str_replace( self::$menu_page_prefix, '', self::$easy_support_videos_menu_page ) : self::$easy_support_videos_menu_page, $strip_prefix, self::$menu_page_prefix );
 		}
 
 		/**

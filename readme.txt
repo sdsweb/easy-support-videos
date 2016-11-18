@@ -4,7 +4,7 @@ Donate link:
 Tags: videos, support, youtube, vimeo, wistia, admin help
 Requires at least: 4.3
 Tested up to: 4.6.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,8 @@ Easy Support Videos for embedding helpful tutorials, training videos, and screen
 == Description ==
 
 Easy Support Videos is great for WordPress consultants, trainers, and product owners to embed compatible oEmbed video into the admin dashboard of a WordPress website. Simply install the plugin, and copy/paste the video link into the admin page, and Easy Support Videos will elegantly display a list of videos for your user.
+
+https://www.youtube.com/watch?v=SG0F_N3qS28
 
 Admins can control who can see the videos, and edit/remove videos, by setting the available role options within Easy Support Video settings. You can also leave a custom note on the video page sidebar, offering further instructions or helpful tips.
 
@@ -58,10 +60,24 @@ In the settings page of Easy Support Videos, you can control who can edit and vi
 
 == Screenshots ==
 
+1. Easy Support Videos
+2. Easy Support Videos Options
 
 == Changelog ==
 
-= 1.0.0 // October 14 2016 =
+= 1.0.1 // November 18 2016 =
+* Added logic to only create/output nonce fields if the current user can edit Easy Support Videos videos
+* Transitioned sidebar items to templates
+* Added Easy_Support_Videos_View JavaScript BackboneJS view to global instances scope
+* Added videos_el_selector parameter to Easy_Support_Videos_View
+* Added jQuery triggers after AJAX requests
+* Added page title parameter to Easy_Support_Videos_Post_Types
+* Added query arguments parameter to Easy_Support_Videos_Post_Types
+* Added filters to each parameter of add_menu_page()
+* Added actions to UnderscoreJS template for newly added videos (matches PHP logic)
+* Added actions before and after various AJAX function calls
+
+= 1.0.0 // October 17 2016 =
 * Initial Release
 
 

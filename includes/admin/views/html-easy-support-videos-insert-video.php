@@ -7,7 +7,7 @@
 	?>
 
 	<label for="easy-support-videos-insert-video-url"><?php _e( 'Add New Video:', 'easy-support-videos' ); ?></label>
-	<input id="easy-support-videos-insert-video-url" class="easy-support-videos-input easy-support-videos-insert-video-url regular-text" name="easy-support-videos-insert-video-url" type="text" value="" autocomplete="off" />
+	<input id="easy-support-videos-insert-video-url" class="regular-text easy-support-videos-input easy-support-videos-insert-video-url" name="easy-support-videos-insert-video-url" type="text" value="" autocomplete="off" />
 	<button id="easy-support-videos-insert-video-button" class="button button-secondary easy-support-videos-button easy-support-videos-insert-video-button"><?php _e( 'Add Video', 'easy-support-video' ); ?></button>
 	<span id="easy-support-videos-insert-video-spinner" class="spinner easy-support-videos-spinner easy-support-videos-insert-video-spinner"></span>
 
