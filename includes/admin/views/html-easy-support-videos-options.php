@@ -33,6 +33,7 @@
 		<?php do_action( 'easy_support_videos_settings' ); ?>
 
 		<p class="submit">
+			<input id="easy-support-videos-options-page" class="easy-support-videos-input easy-support-videos-hidden easy-support-videos-options-page" name="<?php echo Easy_Support_Videos_Options::$option_name; ?>[easy-support-videos-options-page]" type="hidden" value="1" />
 			<?php submit_button( __( 'Save Options', 'easy-support-videos' ), 'primary', 'submit', false ); ?>
 			<?php submit_button( __( 'Restore Defaults', 'easy-support-videos' ), 'secondary', Easy_Support_Videos_Options::$option_name . '[reset]', false ); ?>
 		</p>

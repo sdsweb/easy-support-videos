@@ -3,6 +3,24 @@
  */
 
 /**
+ * Notices
+ */
+.easy-support-videos-wrap .notice {
+	margin: 40px 0 .6em;
+	display: block !important;
+}
+
+.easy-support-videos-options-upgrade-notice {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.easy-support-videos-options-upgrade-notice .dashicons {
+	padding-top: 2px;
+	padding-right: 0.5em;
+}
+
+/**
  * Options
  */
 .easy-support-videos-wrap h2 {

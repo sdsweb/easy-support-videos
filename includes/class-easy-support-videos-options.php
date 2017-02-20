@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Options
  * @author Slocum Studio
- * @version 1.0.1
+ * @version 1.0.3
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.1';
+		public $version = '1.0.3';
 
 		/**
 		 * @var string
@@ -161,9 +161,19 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 				$value['uninstall']['data'] = $easy_support_videos_options_defaults['uninstall']['data']; // Uninstall - Data
 			// Otherwise use the POSTed data or existing data
 			else
-				$value['uninstall']['data'] = ( isset( $value['uninstall']['data'] ) ) ? $easy_support_videos_options_defaults['uninstall']['data'] : false; // Uninstall - Data
+				$value['uninstall']['data'] = ( isset( $value['easy-support-videos-options-page'] ) && isset( $value['uninstall']['data'] ) ) ? $easy_support_videos_options_defaults['uninstall']['data'] : ( ( ! isset( $value['easy-support-videos-options-page'] ) ) ? $easy_support_videos_options['uninstall']['data'] : false ); // Uninstall - Data
 
-			return apply_filters( 'easy_support_videos_options_sanitize_option', $value, $raw_value, $easy_support_videos_options, $easy_support_videos_options_defaults, $this );
+			$value = apply_filters( 'easy_support_videos_options_sanitize_option', $value, $raw_value, $easy_support_videos_options, $easy_support_videos_options_defaults, $this );
+
+			// Remove the reset data
+			if ( isset( $value['reset'] ) )
+				unset( $value['reset'] );
+
+			// Remove the options page data
+			if ( isset( $value['easy-support-videos-options-page'] ) )
+				unset( $value['easy-support-videos-options-page'] );
+
+			return $value;
 		}
 
 
@@ -371,14 +381,14 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 				$filtered = trim( $filtered );
 
 			$found = false;
-			while ( preg_match('/%[a-f0-9]{2}/i', $filtered, $match ) ) {
-				$filtered = str_replace($match[0], '', $filtered );
+			while ( preg_match( '/%[a-f0-9]{2}/i', $filtered, $match ) ) {
+				$filtered = str_replace( $match[0], '', $filtered );
 				$found = true;
 			}
 
 			if ( $found )
 				// Strip out the whitespace that may now exist after removing the octets
-				$filtered = trim( preg_replace('/ +/', ' ', $filtered) );
+				$filtered = trim( preg_replace( '/ +/', ' ', $filtered) );
 
 			return $filtered;
 		}

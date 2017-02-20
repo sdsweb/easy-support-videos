@@ -1,10 +1,10 @@
 === Easy Support Videos - Embed videos in the admin ===
 Contributors: slocumstudio
 Donate link:
-Tags: videos, support, youtube, vimeo, wistia, admin help
+Tags: videos, support, youtube, vimeo, wistia, admin help, dashboard
 Requires at least: 4.3
-Tested up to: 4.6.1
-Stable tag: 1.0.1
+Tested up to: 4.7.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,7 +15,7 @@ Easy Support Videos for embedding helpful tutorials, training videos, and screen
 
 Easy Support Videos is great for WordPress consultants, trainers, and product owners to embed compatible oEmbed video into the admin dashboard of a WordPress website. Simply install the plugin, and copy/paste the video link into the admin page, and Easy Support Videos will elegantly display a list of videos for your user.
 
-https://www.youtube.com/watch?v=SG0F_N3qS28
+https://www.youtube.com/watch?v=Tib2ouPAIEU
 
 Admins can control who can see the videos, and edit/remove videos, by setting the available role options within Easy Support Video settings. You can also leave a custom note on the video page sidebar, offering further instructions or helpful tips.
 
@@ -29,6 +29,15 @@ Easy Support Videos is perfect for supporting your client or website user, throu
 * Control which role's can see or edit videos
 * Leave a custom note or message on the video page
 * Embed videos from any oEmbed source
+
+> **Pro Features**
+>
+> * White-label branding
+> * Drag-n-drop video sorting
+> * Create many video pages
+> * Change admin link placement
+> * Remove the ratings slug
+> * **[Get Easy Support Videos Pro](https://slocumthemes.com/wordpress-plugins/easy-support-videos/?utm_source=easy-support-videos&utm_medium=link&utm_content=wp-org-readme-upgrade&utm_campaign=easy-support-videos)**
 
 [View Easy Support Videos on Github](https://github.com/sdsweb/easy-support-videos/) | [Issue Tracker](https://github.com/sdsweb/easy-support-videos/issues/)
 
@@ -64,6 +73,24 @@ In the settings page of Easy Support Videos, you can control who can edit and vi
 2. Easy Support Videos Options
 
 == Changelog ==
+
+= 1.0.3 // February 20 2017 =
+-------------------------
+* Fixed a bug where the sidebar message content was set to a previous value while a user was still entering content due to the AJAX save request being executed
+* Updated readme
+
+= 1.0.2 // February 15 2017 =
+* Fixed issue where an AJAX spinner icon was adding extra height to video container element
+* Introduced an AJAX queue to allow for AJAX requests to be queued in order of their execution
+* Added logic to allow a single AJAX spinner icon to be set to inactive
+* Added current_user_can() data to localized data
+* Added JavaScript logic to check if the current user can edit videos before initializing various data
+* Added default page title property to Easy_Support_Videos_Post_Types class
+* Added flag to determine when Easy Support Videos options were saved from the Easy Support Videos Options page
+* Added logic to ensure the uninstall data option was preserved when Easy Support Videos options were not saved via the Easy Support Videos Options page
+* Introduced Easy_Support_Videos_Upgrade PHP class to facilitate upgrades to plugin data
+* Added logic to upgrade all Easy Support Videos videos post content to the video URL instead of the oEmbed HTML markup; Fixes bug with multisite WordPress instances where administrators could not save video content; Thanks @plentyland
+* Adjusted CSS for Easy Support Videos options page
 
 = 1.0.1 // November 18 2016 =
 * Added logic to only create/output nonce fields if the current user can edit Easy Support Videos videos

@@ -41,7 +41,6 @@
 }
 
 
-
 /**
  * Flexbox
  */
@@ -211,7 +210,7 @@
 }
 
 #easy-support-videos-videos .easy-support-video:last-of-type {
-	padding-bottom: 0;
+	/*padding-bottom: 0;*/
 }
 
 #easy-support-videos-videos .easy-support-video-title {
@@ -244,12 +243,17 @@
 /**
  * Delete
  */
+#easy-support-videos-videos .easy-support-video .easy-support-videos-video-spinner {
+	display: none;
+}
+
 #easy-support-videos-videos .easy-support-video.easy-support-videos-is-active .easy-support-videos-video-spinner {
 	width: 100%;
 	height: 100%;
 	margin: 0;
 	background-color: #ccc;
 	background-position: center;
+	display: inline-block;
 	position: absolute;
 	z-index: 2;
 	top: 0;
