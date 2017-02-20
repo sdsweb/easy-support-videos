@@ -63,7 +63,7 @@
 							$post_id = ( int ) get_the_ID();
 					?>
 							<label for="easy-support-videos-video-<?php echo $post_id; ?>-title" class="screen-reader-text"><?php _e( 'Video Title:', 'easy-support-videos' ); ?></label>
-							<input id="easy-support-videos-video-<?php echo $post_id; ?>-title" class="regular-text easy-support-videos-input easy-support-videos-video-title easy-support-videos-video-<?php echo $post_id; ?>-title" name="easy-support-videos-video-<?php echo $post_id; ?>-title" type="text" value="<?php echo esc_attr( get_the_title() ); ?>" autocomplete="off" />
+							<input id="easy-support-videos-video-<?php echo $post_id; ?>-title" class="regular-text easy-support-videos-input easy-support-videos-video-title easy-support-videos-video-<?php echo $post_id; ?>-title" name="easy-support-videos-video-<?php echo $post_id; ?>-title" type="text" value="<?php echo esc_attr( wp_unslash( get_the_title() ) ); ?>" autocomplete="off" />
 							<span id="easy-support-videos-video-<?php echo $post_id; ?>-title-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-title-spinner easy-support-videos-video-<?php echo $post_id; ?>-title-spinner"></span>
 							<a href="#" class="easy-support-videos-video-delete" title="<?php _e( 'Delete Video', 'easy-support-videos' ); ?>">
 								<span class="dashicons dashicons-dismiss"></span>

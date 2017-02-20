@@ -1,10 +1,10 @@
 <?php
 /**
- * Conductor Admin Options
+ * Easy Support Videos Admin Options
  *
  * @class Easy_Support_Videos_Admin_Options
  * @author Slocum Studio
- * @version 1.0.0
+ * @version 1.0.2
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.0';
+		public $version = '1.0.2';
 
 		/**
 		 * @var string
@@ -56,8 +56,11 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 			// Hooks
 			add_action( 'init', array( $this, 'init' ) ); // Init
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) ); // Admin Menu
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) ); // Load CSS/JavaScript
-			add_action( 'admin_init', array( $this, 'admin_init' ) ); // Register setting
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) ); // Admin Enqueue Scripts
+			add_action( 'admin_init', array( $this, 'admin_init' ) ); // Admin Init
+
+			// Easy Support Videos
+			add_action( 'easy_support_videos_options_notifications', array( $this, 'easy_support_videos_options_notifications' ) ); // Easy Support Videos - Options Notifications
 		}
 
 		/**
@@ -113,6 +116,30 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 			add_settings_section( 'easy_support_videos_uninstall_section', __( 'Uninstall', 'easy-support-videos' ), array( $this, 'easy_support_videos_uninstall_section' ), Easy_Support_Videos_Options::$option_name . '_uninstall' );
 			add_settings_field( 'easy_support_videos_uninstall_data_field', __( 'Uninstall Data', 'easy-support-videos' ), array( $this, 'easy_support_videos_uninstall_data_field' ), Easy_Support_Videos_Options::$option_name . '_uninstall', 'easy_support_videos_uninstall_section' );
 		}
+
+
+		/***********************
+		 * Easy Support Videos *
+		 ***********************/
+
+		/**
+		 * This function adds Easy Support Videos options notifications.
+		 */
+		public function easy_support_videos_options_notifications() {
+		?>
+			<div class="notice easy-support-videos-options-notice easy-support-videos-options-upgrade-notice">
+				<p>
+					<span class="dashicons dashicons-format-video"></span>
+					<?php printf( __( '<a href="%1$s" target="_blank">%2$s</a>','easy-support-videos' ), esc_url( 'https://slocumthemes.com/wordpress-plugins/easy-support-videos/?utm_source=easy-support-videos&utm_medium=link&utm_content=easy-support-videos-options-upgrade&utm_campaign=easy-support-videos' ), __( 'Upgrade for video sorting, more tabs, and white label features.', 'easy-support-videos' ) ); ?>
+				</p>
+			</div>
+		<?php
+		}
+
+
+		/********************
+		 * Helper Functions *
+		 ********************/
 
 		/**
 		 * This function renders the Easy Support Videos Options page.

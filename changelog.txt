@@ -1,10 +1,35 @@
 ==========================================
 Plugin: Easy Support Videos
 Author: Slocum Design Studio
-Author URI: https://slocumstudio.com/
-Current Version: 1.0.1
+Author URI: https://slocumthemes.com/
+Current Version: 1.0.3
 ==========================================
 
+
+1.0.3 // February 20 2017
+-------------------------
+- Fixed a bug where the sidebar message content was set to a previous value while a user
+  was still entering content due to the AJAX save request being executed
+- Updated readme
+
+1.0.2 // February 15 2017
+-------------------------
+- Fixed issue where an AJAX spinner icon was adding extra height to video container element
+- Introduced an AJAX queue to allow for AJAX requests to be queued in order of their execution
+- Added logic to allow a single AJAX spinner icon to be set to inactive
+- Added current_user_can() data to localized data
+- Added JavaScript logic to check if the current user can edit videos before initializing
+  various data
+- Added default page title property to Easy_Support_Videos_Post_Types class
+- Added flag to determine when Easy Support Videos options were saved from the Easy Support Videos
+  Options page
+- Added logic to ensure the uninstall data option was preserved when Easy Support Videos options were not
+  saved via the Easy Support Videos Options page
+- Introduced Easy_Support_Videos_Upgrade PHP class to facilitate upgrades to plugin data
+- Added logic to upgrade all Easy Support Videos videos post content to the video URL instead of the oEmbed
+  HTML markup; Fixes bug with multisite WordPress instances where administrators could not save video
+  content; Thanks @plentyland
+- Adjusted CSS for Easy Support Videos options page
 
 1.0.1 // November 18 2016
 -------------------------

@@ -3,7 +3,7 @@
  * Easy Support Videos Post Types
  *
  * @class Easy_Support_Videos_Post_Types
- * @version 1.0.1
+ * @version 1.0.3
  * @since 1.0.0
  */
 
@@ -16,12 +16,17 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		/**
 		 * @var string
 		 */
-		public static $version = '1.0.1';
+		public static $version = '1.0.3';
 
 		/**
 		 * @var string
 		 */
 		public static $easy_support_videos_post_type = 'easy_support_videos';
+
+		/**
+		 * @var string
+		 */
+		public static $easy_support_videos_default_page_title = 'Support Videos';
 
 		/**
 		 * @var string
@@ -101,8 +106,11 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		 * This function runs on initialization.
 		 */
 		public function init() {
+			// Setup the default page title
+			self::$easy_support_videos_default_page_title = __( 'Support Videos', 'easy-support-videos' );
+
 			// Easy Support Videos Page Title
-			self::$easy_support_videos_page_title = apply_filters( 'easy_support_videos_menu_page_page_title', __( 'Support Videos', 'easy-support-videos' ), $this );
+			self::$easy_support_videos_page_title = apply_filters( 'easy_support_videos_menu_page_page_title', self::$easy_support_videos_default_page_title, $this );
 
 			// Grab the Easy Support Videos options
 			$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
@@ -216,6 +224,10 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			// Scripts
 			wp_enqueue_script( 'easy-support-videos-admin', Easy_Support_Videos::plugin_url() . '/assets/js/easy-support-videos-admin.js', array( 'jquery', 'underscore', 'wp-backbone', 'wp-util' ), Easy_Support_Videos::$version, true );
 			wp_localize_script( 'easy-support-videos-admin', 'easy_support_videos', apply_filters( 'easy_support_videos_admin_localize', array(
+				// Current User Can
+				'current_user_can' => array(
+					'edit' => self::current_user_can( self::$easy_support_videos_post_type, 'edit_posts' )
+				),
 				// l10n
 				'l10n' => array(
 					'video_url_empty' => __( 'Please enter a video URL.', 'easy-support-videos' ),
@@ -306,7 +318,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			// Insert the new Easy Support Video
 			$post_id = wp_insert_post( apply_filters( 'wp_ajax_easy_support_videos_insert_args', array(
 				'post_title' => $title,
-				'post_content' => $html,
+				'post_content' => $url,
 				'post_status' => 'publish',
 				'post_type' => self::$easy_support_videos_post_type,
 				'meta_input' => array(
@@ -407,7 +419,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 
 			// Update the status data
 			$status['post_id'] = $post_id;
-			$status['title'] = $title;
+			$status['title'] = wp_unslash( $title );
 			$status['message'] = __( 'Video updated.', 'easy-support-videos' );
 			$status = apply_filters( 'wp_ajax_easy_support_videos_edit_success_status', $status, $post_id, $title, $this );
 
