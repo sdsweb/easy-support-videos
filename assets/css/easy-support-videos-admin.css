@@ -68,6 +68,11 @@
 	-ms-flex-pack: end;
 }
 
+/* WordPress 4.8 added flexbox styles to column elements in the about wrap, so we'll set the columns to display as block level elements */
+.easy-support-videos-flex [class$="-col"] {
+	display: block;
+}
+
 .easy-support-videos-flex .easy-support-videos-col {
 	width: 100%;
 	position: relative;
@@ -193,6 +198,7 @@
  * Videos
  */
 #easy-support-videos-videos {
+	width: 100%;
 	padding: 2rem 0;
 }
 
@@ -201,6 +207,7 @@
 }
 
 #easy-support-videos-videos .easy-support-video {
+	width: 100%;
 	padding: 1rem 0;
 	position: relative;
 }

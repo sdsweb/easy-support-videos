@@ -3,8 +3,8 @@ Contributors: slocumstudio
 Donate link:
 Tags: videos, support, youtube, vimeo, wistia, admin help, dashboard
 Requires at least: 4.3
-Tested up to: 4.7.2
-Stable tag: 1.0.3
+Tested up to: 4.9.1
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,17 @@ In the settings page of Easy Support Videos, you can control who can edit and vi
 2. Easy Support Videos Options
 
 == Changelog ==
+
+= 1.0.4 // January 17 2018 =
+-------------------------
+* Fixed a bug where videos were not rendered correctly in WordPress 4.8+
+* Adjusted AJAX logic to ensure duplicate requests were not executed (only the last - most recent - request is executed)
+* Adjusted AJAX logic to ensure individual spinner icons were displayed/hidden correctly
+* Adjusted AJAX logic to ensure messages were not displayed when an AJAX request was aborted
+* Added logic to trigger "esv-ajax-processing" JavaScript event when the AJAX queue is processing
+* Added logic to load plugin text domain via load_plugin_textdomain()
+* Added "easy_support_videos_current_user_can" filter to all Easy_Support_Videos_Post_Types::current_user_can() conditional cases
+* Introduce POT file
 
 = 1.0.3 // February 20 2017 =
 -------------------------

@@ -83,6 +83,7 @@ var easy_support_videos = easy_support_videos || {};
 				processing: false,
 				current_item: {},
 				current_request: false,
+				current_request_count: 0,
 				items: [],
 				/**
 				 * This function adds an item to the queue for processing.
@@ -91,45 +92,61 @@ var easy_support_videos = easy_support_videos || {};
 					var self = this,
 						abort_current_request = false;
 
-					// If this item can abort items with the same action and we have a current request
-					if ( item.abort && ! _.isEmpty( this.current_item ) && item.action === this.current_item.action && this.current_request ) {
-						// Set the abort flag
-						abort_current_request = true;
+					// If we have a current request
+					if ( this.current_request ) {
+						// Grab the abort flag
+						abort_current_request = this.canAbortRequest( item );
 
-						// If the abort property is an object
-						if ( _.isObject( item.abort ) ) {
-							// Loop through each abort property (using find so we can bail if necessary)
-							_.find( item.abort, function( value, property ) {
-								// Bail if the current item doesn't have this property or the value doesn't match
-								if ( ! self.current_item.data.hasOwnProperty( property ) || value !== self.current_item.data[property] ) {
-									// Reset the abort flag
-									abort_current_request = false;
-
-									return true;
-								}
-							} );
-						}
-
-						// If we should abort
+						// If we should abort the current request
 						if ( abort_current_request ) {
+							// Add this item to the end of the queue
+							Easy_Support_Videos_View.ajax.queue.items.push( item );
+
 							// Abort the current request
 							this.current_request.abort();
 
-							// Set the current item
-							Easy_Support_Videos_View.ajax.queue.current_item = item;
+							// Process the next AJAX request (force)
+							this.process( true );
+
+							// Set the current item to this item
+							// TODO: Do we want to actually do this?
+							//Easy_Support_Videos_View.ajax.queue.current_item = item;
 
 							// Process the current item
-							this.processCurrentItem();
+							//this.processCurrentItem();
 						}
 						// Otherwise just add the item to the queue
 						else {
+							// Loop through the queue items
+							_.each( Easy_Support_Videos_View.ajax.queue.items, function ( request_item, index ) {
+								// Grab the abort flag
+								abort_current_request = self.canAbortRequest( item, request_item, true );
+
+								// If we should abort the current request
+								if ( abort_current_request ) {
+									// Remove this item from the queue
+									Easy_Support_Videos_View.ajax.queue.items.splice( index, 1 );
+								}
+							} );
+
 							// Add this item to the end of the queue
 							Easy_Support_Videos_View.ajax.queue.items.push( item );
 						}
-
 					}
 					// Otherwise just add the item to the queue
 					else {
+						// Loop through the queue items
+						_.each( Easy_Support_Videos_View.ajax.queue.items, function ( request_item, index ) {
+							// Grab the abort flag
+							abort_current_request = self.canAbortRequest( item, request_item, true );
+
+							// If we should abort the current request
+							if ( abort_current_request ) {
+								// Remove this item from the queue
+								Easy_Support_Videos_View.ajax.queue.items.splice( index, 1 );
+							}
+						} );
+
 						// Add this item to the end of the queue
 						Easy_Support_Videos_View.ajax.queue.items.push( item );
 					}
@@ -138,13 +155,71 @@ var easy_support_videos = easy_support_videos || {};
 					return this;
 				},
 				/**
+				 * This function determines if a request can be aborted.
+				 */
+				canAbortRequest: function( item, current_item, check_current_item_abort ) {
+					var abort_current_request = false;
+
+					// Defaults
+					current_item = current_item || this.current_item;
+					check_current_item_abort = check_current_item_abort || false;
+
+					// If we should check the current item abort
+					if ( check_current_item_abort ) {
+						// If the abort property on the item is an object, the abort property on the request item is an object, and the item has the same action as the current item
+						if ( _.isObject( item.abort ) && _.isObject( current_item.abort ) && item.action === current_item.action ) {
+							// Set the abort flag
+							abort_current_request = true;
+
+							// Loop through each abort property (using find so we can bail if necessary)
+							_.find( current_item.abort, function( value, property ) {
+								// Bail if the item doesn't have this property or the value doesn't match
+								if ( ! item.abort.hasOwnProperty( property ) || value !== item.abort[property] ) {
+
+									// Reset the abort flag
+									abort_current_request = false;
+
+									return true;
+								}
+							} );
+						}
+					}
+					// Otherwise we shouldn't check the current item abort
+					else {
+						// If this item can abort items with the same action
+						if ( item.abort && ! _.isEmpty( current_item ) && item.action === current_item.action ) {
+							// Set the abort flag
+							abort_current_request = true;
+	
+							// If the abort property is an object
+							if ( _.isObject( item.abort ) ) {
+								// Loop through each abort property (using find so we can bail if necessary)
+								_.find( item.abort, function( value, property ) {
+									// Bail if the current item doesn't have this property or the value doesn't match
+									if ( ! current_item.data.hasOwnProperty( property ) || value !== current_item.data[property] ) {
+										// Reset the abort flag
+										abort_current_request = false;
+	
+										return true;
+									}
+								} );
+							}
+						}
+					}
+
+					return abort_current_request;
+				},
+				/**
 				 * This function processes the queue.
 				 */
-				process: function() {
-					// Bail if we're already processing or there are no items to process
-					if ( Easy_Support_Videos_View.ajax.queue.processing || Easy_Support_Videos_View.ajax.queue.items.length === 0 ) {
-						// If we don't have any items to process
-						if ( Easy_Support_Videos_View.ajax.queue.items.length === 0 ) {
+				process: function( force ) {
+					// Defaults
+					force = force || false;
+
+					// Bail if we're not forcing and we're already processing or there are no items to process
+					if ( ! force && ( Easy_Support_Videos_View.ajax.queue.processing || Easy_Support_Videos_View.ajax.queue.items.length === 0 ) ) {
+						// If we don't have any items to process and we don't have any requests
+						if ( Easy_Support_Videos_View.ajax.queue.items.length === 0 && this.current_request_count === 0 ) {
 							// Reset the current request reference
 							this.current_request = false;
 
@@ -153,10 +228,45 @@ var easy_support_videos = easy_support_videos || {};
 
 							// Set all active spinners to inactive
 							Easy_Support_Videos_View.ajax.setActiveSpinnersInactive();
+
+							// If we're processing
+							if ( Easy_Support_Videos_View.ajax.queue.processing ) {
+								// Reset the processing status flag
+								this.setProcessingStatusFlag( false );
+							}
 						}
+
+						// Trigger the processing event on the Easy Support Videos Backbone View element
+						Easy_Support_Videos_View.$el.trigger( 'esv-ajax-processing', [ false, force ] );
 
 						return;
 					}
+
+					// Bail if we're forcing, we don't have any items to process, and we don't have any requests
+					if ( force && Easy_Support_Videos_View.ajax.queue.items.length === 0 && this.current_request_count === 0 ) {
+						// Reset the current request reference
+						this.current_request = false;
+
+						// Reset the current item
+						this.current_item = {};
+
+						// Set all active spinners to inactive
+						Easy_Support_Videos_View.ajax.setActiveSpinnersInactive();
+
+						// If we're processing
+						if ( Easy_Support_Videos_View.ajax.queue.processing ) {
+							// Reset the processing status flag
+							this.setProcessingStatusFlag( false );
+						}
+
+						// Trigger the processing event on the Easy Support Videos Backbone View element
+						Easy_Support_Videos_View.$el.trigger( 'esv-ajax-processing', [ false, force ] );
+
+						return;
+					}
+
+					// Trigger the processing event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-processing', [ true, force ] );
 
 					// Reset the current request reference
 					this.current_request = false;
@@ -174,7 +284,7 @@ var easy_support_videos = easy_support_videos || {};
 					return this;
 				},
 				/**
-				 * This function processes the current item in the queue
+				 * This function processes the current item in the queue.
 				 *
 				 * @uses Easy_Support_Videos_View.ajax.queue.current_item
 				 */
@@ -184,14 +294,27 @@ var easy_support_videos = easy_support_videos || {};
 					// Make the AJAX request (POST)
 					this.current_request = wp.ajax.post( item.action, item.data ).done( item.success ).fail( item.fail );
 
+					// Increase the current request count
+					this.current_request_count++;
+
 					// Return this for chaining
 					return this;
 				},
 				/**
-				 * This function sets the processing status flag
+				 * This function sets the processing status flag.
 				 */
 				setProcessingStatusFlag: function( status ) {
 					Easy_Support_Videos_View.ajax.queue.processing = ( status ) ? true : false;
+
+					// Return this for chaining
+					return this;
+				},
+				/**
+				 * This function finishes processing an AJAX request.
+				 */
+				finishProcessingRequest: function() {
+					// Decrease the current request count
+					this.current_request_count--;
 
 					// Return this for chaining
 					return this;
@@ -214,8 +337,8 @@ var easy_support_videos = easy_support_videos || {};
 			 * This function displays an AJAX response message if it exists.
 			 */
 			displayResponseStatusMessage: function( response ) {
-				// Bail if we don't have a message or an error
-				if ( ! response.message && ! response.error ) {
+				// Bail if we don't have a message and we don't have an error or the error isn't a function
+				if ( ! response.message && ( ! response.error || _.isFunction( response.error ) ) ) {
 					return;
 				}
 
@@ -225,7 +348,56 @@ var easy_support_videos = easy_support_videos || {};
 			/**
 			 * This function sets an active spinner to inactive.
 			 */
-			setActiveSpinnerInactive: function( $spinner ) {
+			setActiveSpinnerInactive: function( response ) {
+				var spinner_css_selector = '.easy-support-videos-spinner',
+					$spinner;
+
+				// Add the type CSS selector to the spinner CSS selector
+				spinner_css_selector += '[data-type="' + response.type + '"]';
+
+				// Switch based on response type
+				switch ( response.type ) {
+					// Option
+					case 'option':
+						// If we have an option group
+						if ( response.option_group ) {
+							// Add the option group CSS selector to the spinner CSS selector
+							spinner_css_selector += '[data-option-group="' + response.option_group + '"]';
+						}
+
+						// Add the option name CSS selector to the spinner CSS selector
+						spinner_css_selector += '[data-option-name="' + response.option_name + '"]';
+					break;
+
+					// Video
+					case 'video':
+						// If this isn't the insert event
+						if ( response.event !== 'insert' ) {
+							// Add the post ID CSS selector to the spinner CSS selector
+							spinner_css_selector += '[data-post-id="' + response.post_id + '"]';
+						}
+
+						// Add the event CSS selector to the spinner CSS selector
+						spinner_css_selector += '[data-event="' + response.event + '"]';
+					break;
+
+					// Default
+					default:
+						// TODO: Likely going to need to trigger an event here so Pro can hook in and create the right selector
+					break;
+				}
+
+				// TODO: Likely going to need to trigger an event here so Pro can hook in and create the right selector
+
+				// Grab the spinner
+				$spinner = $( spinner_css_selector );
+
+				// If we don't have a spinner and we have a current item spinner
+				if ( ! $spinner.length && Easy_Support_Videos_View.ajax.queue.current_item.spinner ) {
+					// Default to the current item spinner
+					$spinner = Easy_Support_Videos_View.ajax.queue.current_item.spinner
+				}
+
 				// Hide the spinner
 				$spinner.removeClass( easy_support_videos.spinner.active_css_classes );
 			},
@@ -249,11 +421,11 @@ var easy_support_videos = easy_support_videos || {};
 					// Set active spinners to inactive
 					// Easy_Support_Videos_View.ajax.setActiveSpinnersInactive();
 
-					// If we have a spinner for the current item
-					if ( Easy_Support_Videos_View.ajax.queue.current_item.spinner ) {
-						// Set the current active spinner to inactive
-						Easy_Support_Videos_View.ajax.setActiveSpinnerInactive( Easy_Support_Videos_View.ajax.queue.current_item.spinner );
-					}
+					// Finish processing this request
+					Easy_Support_Videos_View.ajax.queue.finishProcessingRequest();
+
+					// Set the current active spinner to inactive
+					Easy_Support_Videos_View.ajax.setActiveSpinnerInactive( response );
 
 					// Display success message
 					Easy_Support_Videos_View.ajax.displayResponseStatusMessage( response );
@@ -331,12 +503,12 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
-				},
+				}
 			},
 			/**
 			 * These functions run on a failed AJAX requests.
 			 */
-			fail:  {
+			fail: {
 				/**
 				 * This function runs on all failed AJAX requests.
 				 */
@@ -344,11 +516,15 @@ var easy_support_videos = easy_support_videos || {};
 					// Set active spinners to inactive
 					//Easy_Support_Videos_View.ajax.setActiveSpinnersInactive();
 
-					// If we have a spinner for the current item
-					if ( Easy_Support_Videos_View.ajax.queue.current_item.spinner ) {
+					// Finish processing this request
+					Easy_Support_Videos_View.ajax.queue.finishProcessingRequest();
+
+					// If the request wasn't aborted
+					if ( ! response.statusText || response.statusText !== 'abort' ) {
 						// Set the current active spinner to inactive
-						Easy_Support_Videos_View.ajax.setActiveSpinnerInactive( Easy_Support_Videos_View.ajax.queue.current_item.spinner );
+						Easy_Support_Videos_View.ajax.setActiveSpinnerInactive( response );
 					}
+
 					// Display fail message
 					Easy_Support_Videos_View.ajax.displayResponseStatusMessage( response );
 
@@ -356,7 +532,7 @@ var easy_support_videos = easy_support_videos || {};
 					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-all', response );
 
 					// Process the AJAX queue
-					Easy_Support_Videos_View.ajax.queue.setProcessingStatusFlag( false ).process();
+					Easy_Support_Videos_View.ajax.queue.setProcessingStatusFlag( ( response.statusText && response.statusText === 'abort' ) ).process();
 				},
 				/**
 				 * This function runs on a failed insert video AJAX request.
@@ -418,7 +594,7 @@ var easy_support_videos = easy_support_videos || {};
 				} );
 
 				// Setup the Easy Support Videos sidebar message current value data
-				$sidebar_message.data( self.current_value_data_key, $sidebar_message.val() );
+				$sidebar_message.data( this.current_value_data_key, $sidebar_message.val() );
 			}
 		},
 		/**
@@ -460,7 +636,7 @@ var easy_support_videos = easy_support_videos || {};
 				success: this.ajax.success.insertVideo,
 				fail: this.ajax.fail.insertVideo,
 				spinner: $spinner
-			} ).process();
+			} ).process(); // TODO: .process( true )?
 		},
 		/**
 		 * This function edits Easy Support Videos (delay 500ms).
@@ -513,8 +689,10 @@ var easy_support_videos = easy_support_videos || {};
 				success: this.ajax.success.editVideo,
 				fail: this.ajax.fail.editVideo,
 				spinner: $spinner,
-				abort: true
-			} ).process();
+				abort: {
+					post_id: data.post_id
+				}
+			} ).process(); // TODO: .process( true )?
 		}, 500 ),
 		/**
 		 * This function deletes Easy Support Videos.
@@ -546,7 +724,7 @@ var easy_support_videos = easy_support_videos || {};
 				success: this.ajax.success.deleteVideo,
 				fail: this.ajax.fail.deleteVideo,
 				spinner: $spinner
-			} ).process();
+			} ).process(); // TODO: .process( true )?
 		},
 		/**
 		 * This function shows Easy Support Videos messages.
@@ -601,7 +779,7 @@ var easy_support_videos = easy_support_videos || {};
 
 			var self = this,
 				current_value = $this.val(),
-				previous_value = $this.data( self.current_value_data_key ),
+				previous_value = $this.data( this.current_value_data_key ),
 				$parent = $this.parents( '.easy-support-videos-sidebar-item-message' ),
 				$option_name = $parent.find( '#easy-support-videos-sidebar-message-option-name' ),
 				option_name = $option_name.val(),
@@ -637,7 +815,7 @@ var easy_support_videos = easy_support_videos || {};
 					option_name: data.option_name,
 					option_group: data.option_group
 				}
-			} ).process();
+			} ).process(); // TODO: .process( true )?
 		}, 500 )
 	} );
 

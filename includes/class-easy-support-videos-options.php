@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Options
  * @author Slocum Studio
- * @version 1.0.3
+ * @version 1.0.4
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.3';
+		public $version = '1.0.4';
 
 		/**
 		 * @var string
@@ -290,6 +290,9 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			// Update the status data
 			$status['message'] = $message;
 			$status['value'] = ( $sanitized_value ) ? $sanitized_value : $value;
+			$status['type'] = 'option';
+			$status['option_group'] = $option_group;
+			$status['option_name'] = $option_name;
 			$status = apply_filters( 'wp_ajax_easy_support_videos_save_option_success_status', $status, $message, $sanitized_value, $value, $option_name, $option_group, $easy_support_videos_options, $this );
 
 			// Success
@@ -373,7 +376,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 
 			$filtered = wp_check_invalid_utf8( $str );
 
-			if ( strpos( $filtered, '<') !== false ) {
+			if ( strpos( $filtered, '<' ) !== false ) {
 				$filtered = wp_pre_kses_less_than( $filtered );
 				$filtered = wp_strip_all_tags( $filtered );
 			}
@@ -388,7 +391,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 
 			if ( $found )
 				// Strip out the whitespace that may now exist after removing the octets
-				$filtered = trim( preg_replace( '/ +/', ' ', $filtered) );
+				$filtered = trim( preg_replace( '/ +/', ' ', $filtered ) );
 
 			return $filtered;
 		}

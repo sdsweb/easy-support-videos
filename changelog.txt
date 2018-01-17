@@ -2,9 +2,22 @@
 Plugin: Easy Support Videos
 Author: Slocum Design Studio
 Author URI: https://slocumthemes.com/
-Current Version: 1.0.3
+Current Version: 1.0.4
 ==========================================
 
+
+1.0.4 // January 17 2018
+------------------------
+- Fixed a bug where videos were not rendered correctly in WordPress 4.8+
+- Adjusted AJAX logic to ensure duplicate requests were not executed (only the last - most
+  recent - request is executed)
+- Adjusted AJAX logic to ensure individual spinner icons were displayed/hidden correctly
+- Adjusted AJAX logic to ensure messages were not displayed when an AJAX request was aborted
+- Added logic to trigger "esv-ajax-processing" JavaScript event when the AJAX queue is processing
+- Added logic to load plugin text domain via load_plugin_textdomain()
+- Added "easy_support_videos_current_user_can" filter to all Easy_Support_Videos_Post_Types::current_user_can()
+  conditional cases
+- Introduce POT file
 
 1.0.3 // February 20 2017
 -------------------------
