@@ -3,11 +3,11 @@
  * Plugin Name: Easy Support Videos
  * Plugin URI: https://www.slocumstudio.com/
  * Description: Easy Support Videos for embedding helpful tutorials, training videos, and screencasts in the Admin dashboard. Works with YouTube, Vimeo, Wistia, VideoPress, and more!
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Slocum Studio
  * Author URI: http://www.slocumstudio.com/
- * Requires at least: 4.0
- * Tested up to: 4.7.2
+ * Requires at least: 4.3
+ * Tested up to: 4.9.1
  * License: GPL2+
  *
  * Text Domain: easy-support-videos
@@ -23,7 +23,7 @@ if ( ! class_exists( 'Easy_Support_Videos' ) ) {
 		/**
 		 * @var string
 		 */
-		public static $version = '1.0.3';
+		public static $version = '1.0.4';
 
 		/**
 		 * @var Easy_Support_Videos, Instance of the class
@@ -48,6 +48,9 @@ if ( ! class_exists( 'Easy_Support_Videos' ) ) {
 		function __construct() {
 			// Load required assets
 			$this->includes();
+
+			// Hooks
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) ); // Plugins Loaded
 		}
 
 		/**
@@ -61,6 +64,14 @@ if ( ! class_exists( 'Easy_Support_Videos' ) ) {
 				include_once 'includes/admin/class-easy-support-videos-admin-options.php'; // Easy Support Videos Admin Options
 				include_once 'includes/class-easy-support-videos-upgrade.php'; // Easy Support Videos Upgrade
 			}
+		}
+
+		/**
+		 * This function runs when plugins are loaded.
+		 */
+		public function plugins_loaded() {
+			// Load the Easy Support Videos text domain
+			load_plugin_textdomain( 'easy-support-videos', false, basename( self::plugin_dir() ) . '/languages/' );
 		}
 
 

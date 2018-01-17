@@ -40,7 +40,7 @@
 					// If the current user can edit Easy Support Videos
 					if ( $current_user_can_edit_easy_support_videos ) :
 				?>
-						<span id="easy-support-videos-video-<?php echo $post_id; ?>-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-spinner easy-support-videos-video-<?php echo $post_id; ?>-spinner"></span>
+						<span id="easy-support-videos-video-<?php echo $post_id; ?>-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-spinner easy-support-videos-video-<?php echo $post_id; ?>-spinner" data-type="video" data-post-id="<?php echo $post_id; ?>" data-event="video"></span>
 				<?php
 					endif;
 				?>
@@ -64,7 +64,7 @@
 					?>
 							<label for="easy-support-videos-video-<?php echo $post_id; ?>-title" class="screen-reader-text"><?php _e( 'Video Title:', 'easy-support-videos' ); ?></label>
 							<input id="easy-support-videos-video-<?php echo $post_id; ?>-title" class="regular-text easy-support-videos-input easy-support-videos-video-title easy-support-videos-video-<?php echo $post_id; ?>-title" name="easy-support-videos-video-<?php echo $post_id; ?>-title" type="text" value="<?php echo esc_attr( wp_unslash( get_the_title() ) ); ?>" autocomplete="off" />
-							<span id="easy-support-videos-video-<?php echo $post_id; ?>-title-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-title-spinner easy-support-videos-video-<?php echo $post_id; ?>-title-spinner"></span>
+							<span id="easy-support-videos-video-<?php echo $post_id; ?>-title-spinner" class="spinner easy-support-videos-spinner easy-support-videos-video-title-spinner easy-support-videos-video-<?php echo $post_id; ?>-title-spinner" data-type="video" data-post-id="<?php echo $post_id; ?>" data-event="edit"></span>
 							<a href="#" class="easy-support-videos-video-delete" title="<?php _e( 'Delete Video', 'easy-support-videos' ); ?>">
 								<span class="dashicons dashicons-dismiss"></span>
 							</a>

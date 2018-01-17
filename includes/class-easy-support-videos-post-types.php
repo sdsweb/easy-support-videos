@@ -3,7 +3,7 @@
  * Easy Support Videos Post Types
  *
  * @class Easy_Support_Videos_Post_Types
- * @version 1.0.3
+ * @version 1.0.4
  * @since 1.0.0
  */
 
@@ -16,7 +16,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		/**
 		 * @var string
 		 */
-		public static $version = '1.0.3';
+		public static $version = '1.0.4';
 
 		/**
 		 * @var string
@@ -344,6 +344,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$status['title'] = $title;
 			$status['html'] = $html;
 			$status['message'] = __( 'Video added to library', 'easy-support-videos' );
+			$status['type'] = 'video';
+			$status['event'] = 'insert';
 			$status = apply_filters( 'wp_ajax_easy_support_videos_insert_success_status', $status, $post_id, $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
 
 			do_action( 'wp_ajax_easy_support_videos_insert_wp_send_json_success', $status, $post_id, $title, $html, self::$easy_support_videos_post_type, $data, $provider, $wp_oembed, $this );
@@ -421,6 +423,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			$status['post_id'] = $post_id;
 			$status['title'] = wp_unslash( $title );
 			$status['message'] = __( 'Video updated.', 'easy-support-videos' );
+			$status['type'] = 'video';
+			$status['event'] = 'edit';
 			$status = apply_filters( 'wp_ajax_easy_support_videos_edit_success_status', $status, $post_id, $title, $this );
 
 			do_action( 'wp_ajax_easy_support_videos_edit_wp_send_json_success', $status, $post_id, $title, $this );
@@ -484,6 +488,8 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 			// Update the status data
 			$status['post_id'] = $post_id;
 			$status['message'] = __( 'Video removed from library.', 'easy-support-videos' );
+			$status['type'] = 'video';
+			$status['event'] = 'video'; // Show the video spinner
 			$status = apply_filters( 'wp_ajax_easy_support_videos_delete_success_status', $status, $post_id, $this );
 
 			do_action( 'wp_ajax_easy_support_videos_delete_wp_send_json_success', $status, $post, $post_id, $this );
@@ -533,11 +539,11 @@ if ( ! class_exists( 'Easy_Support_Videos_Post_Types' ) ) {
 		public static function current_user_can( $post_type, $capability ) {
 			// Bail if the post type or capability aren't set
 			if ( ! array_key_exists( $post_type, self::$post_type_capabilities ) || ! array_key_exists( $capability, self::$post_type_capabilities[$post_type] ) )
-				return false;
+				return apply_filters( 'easy_support_videos_current_user_can', false, $post_type, $capability, self::$post_type_capabilities );
 
 			// Return the cached version
 			if ( array_key_exists( $post_type, self::$current_user_can ) && array_key_exists( $capability, self::$current_user_can[$post_type] ) )
-				return self::$current_user_can[$post_type][$capability];
+				return apply_filters( 'easy_support_videos_current_user_can', self::$current_user_can[$post_type][$capability], $post_type, $capability, self::$post_type_capabilities );
 
 			// Determine if the current user has the capability
 			$current_user_can = current_user_can( self::$post_type_capabilities[$post_type][$capability] );
