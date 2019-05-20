@@ -2,9 +2,13 @@
 Plugin: Easy Support Videos
 Author: Slocum Design Studio
 Author URI: https://slocumthemes.com/
-Current Version: 1.0.4
+Current Version: 1.0.5
 ==========================================
 
+
+1.0.5 // May 20 2019
+--------------------
+- Tested and verified WordPress 5.0+ support
 
 1.0.4 // January 17 2018
 ------------------------

@@ -3,8 +3,8 @@ Contributors: slocumstudio
 Donate link:
 Tags: videos, support, youtube, vimeo, wistia, admin help, dashboard
 Requires at least: 4.3
-Tested up to: 4.9.1
-Stable tag: 1.0.4
+Tested up to: 5.1.1
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,10 @@ In the settings page of Easy Support Videos, you can control who can edit and vi
 2. Easy Support Videos Options
 
 == Changelog ==
+
+= 1.0.5 // May 20 2019 =
+-------------------------
+* Tested and verified WordPress 5.0+ support
 
 = 1.0.4 // January 17 2018 =
 -------------------------

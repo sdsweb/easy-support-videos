@@ -3,11 +3,11 @@
  * Plugin Name: Easy Support Videos
  * Plugin URI: https://www.slocumstudio.com/
  * Description: Easy Support Videos for embedding helpful tutorials, training videos, and screencasts in the Admin dashboard. Works with YouTube, Vimeo, Wistia, VideoPress, and more!
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Slocum Studio
  * Author URI: http://www.slocumstudio.com/
  * Requires at least: 4.3
- * Tested up to: 4.9.1
+ * Tested up to: 5.1.1
  * License: GPL2+
  *
  * Text Domain: easy-support-videos
