@@ -15,7 +15,7 @@ Easy Support Videos for embedding helpful tutorials, training videos, and screen
 
 Easy Support Videos is great for WordPress consultants, trainers, and product owners to embed compatible oEmbed video into the admin dashboard of a WordPress website. Simply install the plugin, and copy/paste the video link into the admin page, and Easy Support Videos will elegantly display a list of videos for your user.
 
-https://www.youtube.com/watch?v=Tib2ouPAIEU
+https://vimeo.com/540834455
 
 Admins can control who can see the videos, and edit/remove videos, by setting the available role options within Easy Support Video settings. You can also leave a custom note on the video page sidebar, offering further instructions or helpful tips.
 
