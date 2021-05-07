@@ -235,6 +235,7 @@
 	padding: 0.5rem;
 	font-weight: bold;
 	font-size: 1.125rem;
+	border-color: #aaa;
 }
 
 #easy-support-videos-videos .easy-support-videos-video-delete {
@@ -244,6 +245,15 @@
 
 #easy-support-videos-videos .easy-support-video-title:hover .easy-support-videos-video-delete {
 	display: inline-block;
+}
+
+#easy-support-videos-videos .easy-support-videos-video-excerpt {
+	width: 100%;
+	margin-top: 1em;
+	min-height: 4.5rem;
+	font-size: 1.125rem;
+	line-height: 1.25em;
+	border-color: #aaa;
 }
 
 
@@ -277,6 +287,41 @@
 
 .easy-support-videos-video-delete:focus {
 	box-shadow: none;
+}
+
+
+/**
+ * Contextual Videos - Contexts
+ */
+.easy-support-videos-contextual-videos-contexts-wrap {
+	margin-top: 1.5em;
+	padding: 1em;
+	background: #e6e6e6;
+	border: 1px solid #c6c6c6;
+	line-height: 1.25em;
+}
+
+
+/**
+ * Contextual Videos - Global Video Toggle
+ */
+.easy-support-videos-contextual-videos-set-global-video-context-toggle {
+	font-weight: normal;
+}
+
+.easy-support-videos-contextual-videos-contexts + .easy-support-videos-contextual-videos-set-global-video-context-toggle {
+	margin-top: 1em;
+	padding-top: 1em;
+	border-top: 1px solid #ccc;
+}
+
+.easy-support-videos-contextual-videos-set-global-video-context-toggle .easy-support-videos-toggle-set-global-video {
+	margin-bottom: 0;
+	float: right;
+}
+
+.easy-support-videos-wrap p.easy-support-videos-contextual-videos-set-global-video-context-toggle-description {
+	font-size: 14px;
 }
 
 
@@ -329,8 +374,3 @@
 #easy-support-videos-option-sidebar-message:active {
 	background: #fff;
 }
-
-
-/**
- * Options
- */

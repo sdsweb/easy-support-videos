@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Options
  * @author Slocum Studio
- * @version 1.0.4
+ * @version 2.0.0
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.4';
+		public $version = '2.0.0';
 
 		/**
 		 * @var string
@@ -149,7 +149,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			 * Sidebar
 			 */
 
-			$value['sidebar']['message'] = ( isset( $value['sidebar']['message'] ) ) ? $this->sanitize_text_field( $value['sidebar']['message'], true ) : $easy_support_videos_options['sidebar']['message']; // Sidebar Message
+			$value['sidebar']['message'] = ( isset( $value['sidebar']['message'] ) ) ? sanitize_textarea_field( $value['sidebar']['message'] ) : $easy_support_videos_options['sidebar']['message']; // Sidebar Message
 
 
 			/*
@@ -260,7 +260,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 							// Message
 							case 'message':
 								// Grab the sanitized value
-								$sanitized_value = stripslashes( $this->sanitize_text_field( $value, true ) );
+								$sanitized_value = stripslashes( sanitize_textarea_field( $value ) );
 
 								// Update the success message
 								$message = __( 'Sidebar message saved.', 'easy-support-videos' );
@@ -312,7 +312,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			if ( $option_name )
 				return apply_filters( 'easy_support_videos_options_' . $option_name, wp_parse_args( get_option( $option_name ), Easy_Support_Videos_Options::get_options_defaults( $option_name ) ), $option_name );
 
-			return apply_filters( 'easy_support_videos_options', wp_parse_args( get_option( Easy_Support_Videos_Options::$option_name ), Easy_Support_Videos_Options::get_options_defaults() ) );
+			return apply_filters( 'easy_support_videos_options', wp_parse_args( get_option( Easy_Support_Videos_Options::$option_name ), Easy_Support_Videos_Options::get_options_defaults() ), Easy_Support_Videos_Options::get_options_defaults() );
 		}
 
 		/**
@@ -346,54 +346,6 @@ if ( ! class_exists( 'Easy_Support_Videos_Options' ) ) {
 			}
 
 			return apply_filters( 'easy_support_videos_options_defaults', $defaults, $option_name );
-		}
-
-
-		/**********************
-		 * Internal Functions *
-		 **********************/
-
-		/**
-		 * This function sanitizes text fields.
-		 *
-		 * It functions nearly identically to WordPress' sanitize_text_field(), except that
-		 * it can allow extra white space to be kept (for textareas).
-		 *
-		 * sanitize_text_field() - https://github.com/WordPress/WordPress/blob/84aebb98969200d5e34a58bad0a8ae2e3f0bcc5c/wp-includes/formatting.php#L1740
-		 * License: GPL2
-		 * Copyright: WordPress.org, https://wordpress.org/
-		 *
-		 * We've modified this logic to suit our needs.
-		 */
-		public function sanitize_text_field( $str, $textarea = false ) {
-			// If this isn't a textarea, use WordPress' sanitize_text_field()
-			if ( ! $textarea )
-				return sanitize_text_field( $str );
-
-			/*
-			 * WordPress logic
-			 */
-
-			$filtered = wp_check_invalid_utf8( $str );
-
-			if ( strpos( $filtered, '<' ) !== false ) {
-				$filtered = wp_pre_kses_less_than( $filtered );
-				$filtered = wp_strip_all_tags( $filtered );
-			}
-			else
-				$filtered = trim( $filtered );
-
-			$found = false;
-			while ( preg_match( '/%[a-f0-9]{2}/i', $filtered, $match ) ) {
-				$filtered = str_replace( $match[0], '', $filtered );
-				$found = true;
-			}
-
-			if ( $found )
-				// Strip out the whitespace that may now exist after removing the octets
-				$filtered = trim( preg_replace( '/ +/', ' ', $filtered ) );
-
-			return $filtered;
 		}
 	}
 

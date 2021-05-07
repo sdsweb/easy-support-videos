@@ -355,7 +355,7 @@ msgid "Easy Support Videos"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://www.slocumstudio.com/"
+msgid "https://www.easysupportvideos.com/"
 msgstr ""
 
 #. Author of the plugin/theme
@@ -363,5 +363,5 @@ msgid "Slocum Studio"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://www.slocumstudio.com/"
+msgid "https://www.slocumstudio.com/"
 msgstr ""

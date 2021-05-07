@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Admin_Views
  * @author Slocum Studio
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if( ! class_exists( 'Easy_Support_Videos_Admin_Views' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.0';
+		public $version = '2.0.0';
 
 		/**
 		 * @var array
@@ -104,8 +104,8 @@ if( ! class_exists( 'Easy_Support_Videos_Admin_Views' ) ) {
 		/**
 		 * This function renders the Easy Support Videos Video template part.
 		 */
-		public static function videos_template() {
-			self::load_template( 'html-easy-support-videos-videos.php' );
+		public static function videos_template( $args = array() ) {
+			self::load_template( 'html-easy-support-videos-videos.php', true, $args );
 		}
 
 		/**
@@ -170,7 +170,7 @@ if( ! class_exists( 'Easy_Support_Videos_Admin_Views' ) ) {
 		/**
 		 * This function loads a template.
 		 */
-		public static function load_template( $template, $require_once = false ) {
+		public static function load_template( $template, $require_once = false, $data = array() ) {
 			// Template
 			$the_template = '';
 
@@ -178,16 +178,26 @@ if( ! class_exists( 'Easy_Support_Videos_Admin_Views' ) ) {
 			if ( file_exists( Easy_Support_Videos::plugin_dir() . '/includes/admin/views/' . $template ) )
 				$the_template = Easy_Support_Videos::plugin_dir() . '/includes/admin/views/' . $template;
 
-			$the_template = apply_filters( 'easy_support_videos_admin_views_load_template', $the_template, $template, $require_once );
+			$the_template = apply_filters( 'easy_support_videos_admin_views_load_template', $the_template, $template, $require_once, $data );
 
 			// If we have a template
-			if ( $the_template )
+			if ( $the_template ) {
+				// If data was passed we have to require() the files
+				// TODO: Is there any reason we can't use load_template here? We may not be able to with data being passed to the template, but we should use it if we can
+				if ( is_array( $data ) && ! empty( $data ) ) {
+					// Extract the data for use in the template
+					extract( $data, EXTR_SKIP ); // Skip collisions
+					unset( $data ); // We don't need the $data var anymore
+				}
+
 				// If this template should be required once
 				if ( $require_once )
 					require_once $the_template;
 				// Otherwise just include the template
 				else
 					include_once $the_template;
+
+			}
 		}
 	}
 

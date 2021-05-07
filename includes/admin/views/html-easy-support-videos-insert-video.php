@@ -12,7 +12,7 @@
 	<span id="easy-support-videos-insert-video-spinner" class="spinner easy-support-videos-spinner easy-support-videos-insert-video-spinner" data-type="video" data-event="insert"></span>
 
 	<div id="easy-support-videos-insert-video-description" class="easy-support-videos-insert-video-description">
-		<p class="description easy-support-videos-description"><?php printf( __( 'To add a video to the library, paste a URL from any %1$s and "Add Video" or press enter.', 'easy-support-videos' ), sprintf( '<a href="%1$s" target="_blank">%2$s</a>', esc_url( 'https://codex.wordpress.org/Embeds' ), __( 'oEmbed video provider', 'easy-support-videos' ) ) ); ?></p>
+		<p class="description easy-support-videos-description"><?php printf( __( 'To add a video to the library, paste a URL from any %1$s and "Add Video" or press enter.', 'easy-support-videos' ), sprintf( '<a href="%1$s" target="_blank">%2$s</a>', esc_url( 'https://wordpress.org/support/article/embeds/' ), __( 'embed video provider', 'easy-support-videos' ) ) ); ?></p>
 	</div>
 
 	<?php do_action( 'easy_support_videos_insert_video_after' ); ?>
