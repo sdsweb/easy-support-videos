@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Upgrade
  * @author Slocum Studio
- * @version 1.0.2
+ * @version 2.0.0
  * @since 1.0.0
  */
 
@@ -17,7 +17,12 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.2';
+		public $version = '2.0.0';
+
+		/**
+		 * @var Boolean
+		 */
+		public $did_early_upgrade = false;
 
 		/**
 		 * @var Boolean
@@ -25,9 +30,14 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 		public $did_upgrade = false;
 
 		/**
-		 * @var string
+		 * @var array
 		 */
-		public static $option_name = 'easy_support_videos_version';
+		public $early_upgrades_done = array();
+
+		/**
+		 * @var array
+		 */
+		public $upgrades_done = array();
 
 		/**
 		 * @var Easy_Support_Videos_Upgrade, Instance of the class
@@ -50,36 +60,65 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 		 * the required files and assets.
 		 */
 		function __construct() {
+			// Hooks
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) ); // Plugins Loaded
 			add_action( 'admin_head', array( $this, 'admin_head' ) ); // Admin Head
+		}
+
+		/**
+		 * This function runs when plugins are loaded.
+		 */
+		public function plugins_loaded() {
+			// Bail if this isn't the admin
+			if ( ! is_admin() )
+				return;
+
+			// Grab the Easy Support Videos version
+			$esv_version = get_option( Easy_Support_Videos_Install::$option_name, null );
+
+			// If this isn't an iframe request and the old Easy Support Videos version is less than the current Easy Support Videos version
+			if ( ! defined( 'IFRAME_REQUEST' ) && version_compare( $esv_version, Easy_Support_Videos::$version, '<' ) ) {
+				do_action( 'easy_support_videos_upgrade_early_before', $esv_version, Easy_Support_Videos::$version, $this );
+
+				/*
+				 * Version 2.0.0 (early)
+				 */
+				if ( version_compare( $esv_version, '2.0.0', '<' ) )
+					$this->upgrade_200_early();
+
+				do_action( 'easy_support_videos_upgrade_early', $esv_version, Easy_Support_Videos::$version, $this );
+
+				do_action( 'easy_support_videos_upgrade_early_after', $esv_version, Easy_Support_Videos::$version, $this );
+			}
 		}
 
 		/**
 		 * This function runs in the admin head.
 		 */
 		public function admin_head() {
-			global $hook_suffix;
+			// Grab the Easy Support Videos version
+			$esv_version = get_option( Easy_Support_Videos_Install::$option_name, null );
 
-			// Bail if we're not on the Easy Support Videos page or the Easy Support Videos Options page
-			if ( $hook_suffix !== Easy_Support_Videos_Post_Types::get_easy_support_videos_menu_page( false ) && $hook_suffix !== Easy_Support_Videos_Admin_Options::get_sub_menu_page( false ) )
-				return;
+			// If this isn't an iframe request and the old Easy Support Videos version is less than the current Easy Support Videos version
+			if ( ! defined( 'IFRAME_REQUEST' ) && version_compare( $esv_version, Easy_Support_Videos::$version, '<' ) ) {
+				do_action( 'easy_support_videos_upgrade_before', $esv_version, Easy_Support_Videos::$version, $this );
 
-			// Grab the Easy Support Videos version (default to 1.0.0)
-			if ( ! ( $esv_version = get_option( self::$option_name ) ) )
-				$esv_version = '1.0.0';
+				/*
+				 * Version 1.0.2
+				 */
+				if ( version_compare( $esv_version, '1.0.2', '<' ) )
+					$this->upgrade_102();
 
-			/*
-			 * Version 1.0.2
-			 */
-			if ( version_compare( $esv_version, '1.0.2', '<' ) )
-				$this->upgrade_102();
+				/*
+				 * Version 2.0.0
+				 */
+				if ( version_compare( $esv_version, '2.0.0', '<' ) )
+					$this->upgrade_200();
 
-			do_action( 'easy_support_videos_upgrade', $esv_version, Easy_Support_Videos::$version, $this );
+				do_action( 'easy_support_videos_upgrade', $esv_version, Easy_Support_Videos::$version, $this );
 
-			// If we performed an upgrade or we're on the Easy Support Videos Options page
-			// if ( $this->did_upgrade || $hook_suffix === Easy_Support_Videos_Admin_Options::get_sub_menu_page( false ) )
-
-			// Update the Easy Support Videos version
-			update_option( self::$option_name, Easy_Support_Videos::$version );
+				do_action( 'easy_support_videos_upgrade_after', $esv_version, Easy_Support_Videos::$version, $this );
+			}
 		}
 
 
@@ -88,8 +127,10 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 		 **********************/
 
 		/**
-		 * This function runs upgrades for Easy Support Videos 1.0.2. It sets the post content on all
-		 * Easy Support Videos videos to the URL instead of the oEmbed HTML markup.
+		 * This function runs upgrades for Easy Support Videos 1.0.2.
+		 *
+		 * Note: We are setting the post content on all Easy Support Videos videos
+		 * to the URL instead of the oEmbed HTML markup.
 		 */
 		public function upgrade_102() {
 			// Find Easy Support Videos
@@ -103,7 +144,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 					$post = $easy_support_videos->next_post();
 
 					// Grab the post ID
-					$post_id = get_post_field( 'ID', $post) ;
+					$post_id = get_post_field( 'ID', $post ) ;
 
 					// Update the post (set the post content to the Easy Support Videos URL meta value)
 					wp_update_post( array(
@@ -115,6 +156,51 @@ if ( ! class_exists( 'Easy_Support_Videos_Upgrade' ) ) {
 
 			// Set the did upgrade flag
 			$this->did_upgrade = true;
+
+			// Append this version to the upgrades done
+			$this->upgrades_done[] = '1.0.2';
+		}
+
+		/**
+		 * This function runs upgrades for Easy Support Videos 2.0.0 (early).
+		 */
+		public function upgrade_200_early() {
+			// Grab the contextual videos active contexts transient
+			$contextual_videos_active_contexts = get_transient( Easy_Support_Videos_Admin_Contextual_Videos::$active_contexts_transient_name );
+
+			// If we don't have the contextual videos active contexts
+			if ( ! $contextual_videos_active_contexts )
+				// Set the contextual videos active contexts
+				$contextual_videos_active_contexts = array();
+
+			// Set the contextual videos active contexts transient
+			set_transient( Easy_Support_Videos_Admin_Contextual_Videos::$active_contexts_transient_name, $contextual_videos_active_contexts );
+
+			// Set the did upgrade flag
+			$this->did_early_upgrade = true;
+
+			// Append this version to the early upgrades done
+			$this->early_upgrades_done[] = '2.0.0';
+		}
+
+		/**
+		 * This function runs upgrades for Easy Support Videos 2.0.0.
+		 */
+		public function upgrade_200() {
+			// If the Easy Support Videos setup wizard is enabled
+			if ( Easy_Support_Videos_Install::is_setup_wizard_enabled() ) {
+				// Set the Easy Support Videos show setup wizard transient (expires in ~1 week)
+				set_transient( Easy_Support_Videos_Install::$show_setup_wizard_transient_name, 1, ( DAY_IN_SECONDS * 7 ) );
+
+				// Update the Easy Support Videos published videos count transient
+				Easy_Support_Videos_Post_Types::update_published_videos_count_transient();
+
+				// Set the did upgrade flag
+				$this->did_upgrade = true;
+
+				// Append this version to the upgrades done
+				$this->upgrades_done[] = '2.0.0';
+			}
 		}
 	}
 

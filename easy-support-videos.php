@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Easy Support Videos
- * Plugin URI: https://www.slocumstudio.com/
+ * Plugin URI: https://www.easysupportvideos.com/
  * Description: Easy Support Videos for embedding helpful tutorials, training videos, and screencasts in the Admin dashboard. Works with YouTube, Vimeo, Wistia, VideoPress, and more!
- * Version: 1.0.6
+ * Version: 2.0.0
  * Author: Slocum Studio
- * Author URI: http://www.slocumstudio.com/
+ * Author URI: https://www.slocumstudio.com/
  * Requires at least: 4.3
- * Tested up to: 5.4
+ * Tested up to: 5.7.1
  * License: GPL2+
  *
  * Text Domain: easy-support-videos
@@ -23,7 +23,7 @@ if ( ! class_exists( 'Easy_Support_Videos' ) ) {
 		/**
 		 * @var string
 		 */
-		public static $version = '1.0.6';
+		public static $version = '2.0.0';
 
 		/**
 		 * @var Easy_Support_Videos, Instance of the class
@@ -57,11 +57,17 @@ if ( ! class_exists( 'Easy_Support_Videos' ) ) {
 		 * Include required core files used in admin and on the front-end.
 		 */
 		private function includes() {
+			// All
+			include_once 'includes/class-easy-support-videos-options.php'; // Easy Support Videos Options
+
 			// Admin Only
 			if ( is_admin() ) {
-				include_once 'includes/class-easy-support-videos-options.php'; // Easy Support Videos Options
 				include_once 'includes/class-easy-support-videos-post-types.php'; // Easy Support Videos Post Types
 				include_once 'includes/admin/class-easy-support-videos-admin-options.php'; // Easy Support Videos Admin Options
+				include_once 'includes/admin/class-easy-support-videos-admin-contextual-videos.php'; // Easy Support Videos Admin Contextual Videos
+				include_once 'includes/class-easy-support-videos-preview.php'; // Easy Support Videos Preview
+
+				include_once 'includes/class-easy-support-videos-install.php'; // Easy Support Videos Install
 				include_once 'includes/class-easy-support-videos-upgrade.php'; // Easy Support Videos Upgrade
 			}
 		}

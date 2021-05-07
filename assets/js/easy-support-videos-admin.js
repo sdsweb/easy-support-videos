@@ -3,7 +3,7 @@
  */
 var easy_support_videos = easy_support_videos || {};
 
-// TODO: this vs global variables (normalize in logic)
+// TODO: Future: this vs global variables (normalize in logic)
 
 ( function ( $ ) {
 	"use strict";
@@ -27,7 +27,8 @@ var easy_support_videos = easy_support_videos || {};
 			insert: 'easy_support_videos_insert',
 			edit: 'easy_support_videos_edit',
 			delete: 'easy_support_videos_delete',
-			save_option: 'easy_support_videos_save_option'
+			save_option: 'easy_support_videos_save_option',
+			contextual_videos_set_global_video: 'easy_support_videos_contextual_videos_set_global_video'
 		};
 	}
 
@@ -53,18 +54,29 @@ var easy_support_videos = easy_support_videos || {};
 		current_value_data_key: 'easy-support-videos-current-value',
 		message_timer: -1,
 		message_timer_delay: 5000,
+		current_message_timer_delay: 0,
 		events: {
+			// Preview Button Click
+			'click #easy-support-videos-pro-preview-button': 'maybePreviewVideos',
 			// Insert Video
 			'click #easy-support-videos-insert-video-button': 'insertVideo',
 			'keypress #easy-support-videos-insert-video-url': 'insertVideo',
-			// Edit Video
-			'keyup .easy-support-videos-video-title': 'editVideo',
+			// Edit Video Title
+			'input .easy-support-videos-video-title': 'editVideo',
+			// Edit Video Excerpt
+			'input .easy-support-videos-video-excerpt': 'editVideoExcerpt',
 			// Delete Video
 			'click .easy-support-videos-video-delete': 'deleteVideo',
+			// Easy Support Videos AJAX Processing
+			'esv-ajax-processing': function( event, processing, force ) {
+				this.ajax.events.esvAjaxProcessing( event, processing, force );
+			},
 			// Close Message
 			'click .easy-support-videos-status-message-close': 'hideMessage',
 			// Edit Sidebar Message
-			'keyup #easy-support-videos-option-sidebar-message': 'editSidebarMessage'
+			'input #easy-support-videos-option-sidebar-message': 'editSidebarMessage',
+			// Contextual Videos - Set Global Video Toggle Change
+			'change .easy-support-videos-contextual-videos-set-global-video': 'setContextualVideosGlobalVideo',
 		},
 		/**
 		 * AJAX
@@ -75,6 +87,35 @@ var easy_support_videos = easy_support_videos || {};
 			// Default AJAX data
 			data: {
 				easy_support_videos: 1
+			},
+			/*
+			 * Events
+			 */
+			events: {
+				/**
+				 * This function runs when the Easy Support Videos AJAX queue is processing.
+				 */
+				esvAjaxProcessing: function( event, processing, force ) {
+					var $preview_button = Easy_Support_Videos_View.$el.find( '#easy-support-videos-preview-button' ),
+						$spinner = Easy_Support_Videos_View.$el.find( '#easy-support-videos-video-preview-spinner' );
+
+					// If we're processing
+					if ( processing ) {
+						// Show the preview spinner
+						$spinner.addClass( easy_support_videos.spinner.active_css_classes );
+
+						// Add the disabled CSS classes to the preview button
+						$preview_button.addClass( 'disabled easy-support-videos-disabled' );
+					}
+					// Otherwise we're not processing
+					else {
+						// Hide the preview spinner
+						$spinner.removeClass( easy_support_videos.spinner.active_css_classes );
+
+						// Remove the disabled CSS classes to the preview button
+						$preview_button.removeClass( 'disabled easy-support-videos-disabled' );
+					}
+				},
 			},
 			/**
 			 * AJAX Queue
@@ -107,13 +148,6 @@ var easy_support_videos = easy_support_videos || {};
 
 							// Process the next AJAX request (force)
 							this.process( true );
-
-							// Set the current item to this item
-							// TODO: Do we want to actually do this?
-							//Easy_Support_Videos_View.ajax.queue.current_item = item;
-
-							// Process the current item
-							//this.processCurrentItem();
 						}
 						// Otherwise just add the item to the queue
 						else {
@@ -383,11 +417,11 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Default
 					default:
-						// TODO: Likely going to need to trigger an event here so Pro can hook in and create the right selector
+						// TODO: Future: Likely going to need to trigger an event here so Pro can hook in and create the right selector
 					break;
 				}
 
-				// TODO: Likely going to need to trigger an event here so Pro can hook in and create the right selector
+				// TODO: Future: Likely going to need to trigger an event here so Pro can hook in and create the right selector
 
 				// Grab the spinner
 				$spinner = $( spinner_css_selector );
@@ -444,6 +478,9 @@ var easy_support_videos = easy_support_videos || {};
 						$single_easy_support_videos = $easy_support_videos_videos.find( '.easy-support-video' ),
 						$video_url = Easy_Support_Videos_View.$el.find( '#easy-support-videos-insert-video-url' );
 
+					// Add the "easy-support-videos-has-videos" CSS class to the Easy Support Videos view element
+					Easy_Support_Videos_View.$el.addClass( 'easy-support-videos-has-videos' );
+
 					// If we have existing Easy Support Videos
 					if ( $single_easy_support_videos.length ) {
 						$single_easy_support_videos.first().before( Easy_Support_Videos_View.template( response ) );
@@ -482,8 +519,20 @@ var easy_support_videos = easy_support_videos || {};
 				 * This function runs on a successful delete video AJAX request.
 				 */
 				deleteVideo: function( response ) {
+					var $easy_support_videos_videos = Easy_Support_Videos_View.$el.find( Easy_Support_Videos_View.videos_el_selector ),
+						$single_easy_support_videos;
+
 					// Remove the video
 					Easy_Support_Videos_View.$el.find( '.easy-support-video[data-post-id="' + response.post_id + '"]' ).remove();
+
+					// Grab the single Easy Support Videos videos
+					$single_easy_support_videos = $easy_support_videos_videos.find( '.easy-support-video' );
+
+					// If we don't have existing Easy Support Videos
+					if ( ! $single_easy_support_videos.length ) {
+						// Remove the "easy-support-videos-has-videos" CSS class from the Easy Support Videos view element
+						Easy_Support_Videos_View.$el.removeClass( 'easy-support-videos-has-videos' );
+					}
 
 					// Trigger the an event on the Easy Support Videos Backbone View element
 					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-delete-video', response );
@@ -500,6 +549,36 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Trigger the an event on the Easy Support Videos Backbone View element
 					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-edit-sidebar-message', response );
+
+					// Call the "all" success function
+					Easy_Support_Videos_View.ajax.success.all( response );
+				},
+				/**
+				 * This function runs on a successful set contextual videos global video AJAX request.
+				 */
+				setContextualVideosGlobalVideo: function( response ) {
+					var set_global_video = response.contextual_videos.set_global_video,
+						$contextual_videos_set_global_video_context_toggles = Easy_Support_Videos_View.$el.find( '.easy-support-videos-contextual-videos-set-global-video-context-toggle' ),
+						$contextual_videos_set_global_video_context_toggle = $contextual_videos_set_global_video_context_toggles.filter( '[data-post-id="' + response.post_id + '"]' ),
+						$other_contextual_videos_set_global_video_context_toggle_els = $contextual_videos_set_global_video_context_toggles.not( $contextual_videos_set_global_video_context_toggle );
+
+					// If we set the global video
+					if ( set_global_video ) {
+						// Loop through the other contextual videos set global video context toggle elements
+						$other_contextual_videos_set_global_video_context_toggle_els.each( function() {
+							var $this = $( this ),
+								$checkbox = $this.find( 'input[type="checkbox"]' );
+
+							// If this contextual videos set global video context toggle is checked
+							if ( $checkbox.prop( 'checked' ) ) {
+								// Reset the checked property on this contextual videos set global video context toggle
+								$checkbox.prop( 'checked', false );
+							}
+						} );
+					}
+
+					// Trigger the an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-success-edit-contextual-videos-set-global-video', response );
 
 					// Call the "all" success function
 					Easy_Support_Videos_View.ajax.success.all( response );
@@ -563,7 +642,17 @@ var easy_support_videos = easy_support_videos || {};
 
 					// Call the "all" fail function
 					Easy_Support_Videos_View.ajax.fail.all( response );
-				}
+				},
+				/**
+				 * This function runs on a failed set contextual videos global video AJAX request.
+				 */
+				setContextualVideosGlobalVideo: function( response ) {
+					// Trigger an event on the Easy Support Videos Backbone View element
+					Easy_Support_Videos_View.$el.trigger( 'esv-ajax-fail-edit-contextual-videos-global-video', response );
+
+					// Call the "all" fail function
+					Easy_Support_Videos_View.ajax.fail.all( response );
+				},
 			}
 		},
 		/**
@@ -576,11 +665,14 @@ var easy_support_videos = easy_support_videos || {};
 			// Bind this to functions
 			_.bindAll(
 				this,
+				'maybePreviewVideos',
 				'insertVideo',
 				'editVideo',
 				'deleteVideo',
 				'hideMessage',
-				'editSidebarMessage'
+				'editSidebarMessage',
+				'editVideoExcerpt',
+				'setContextualVideosGlobalVideo'
 			);
 
 			// If the current user can edit
@@ -595,6 +687,18 @@ var easy_support_videos = easy_support_videos || {};
 
 				// Setup the Easy Support Videos sidebar message current value data
 				$sidebar_message.data( this.current_value_data_key, $sidebar_message.val() );
+			}
+		},
+		/**
+		 * This function determines if videos can be previewed.
+		 */
+		maybePreviewVideos: function( event ) {
+			var $this = $( event.currentTarget );
+
+			// If the preview button is disabled
+			if ( $this.hasClass( 'disabled' ) ) {
+				// Prevent default
+				event.preventDefault();
 			}
 		},
 		/**
@@ -636,7 +740,7 @@ var easy_support_videos = easy_support_videos || {};
 				success: this.ajax.success.insertVideo,
 				fail: this.ajax.fail.insertVideo,
 				spinner: $spinner
-			} ).process(); // TODO: .process( true )?
+			} ).process();
 		},
 		/**
 		 * This function edits Easy Support Videos (delay 500ms).
@@ -647,31 +751,33 @@ var easy_support_videos = easy_support_videos || {};
 			force = force || false;
 
 			var self = this,
-				$title = ( ! $this.hasClass( 'easy-support-videos-video-title' ) ) ? $this.find( '.easy-support-videos-video-title' ) : $this,
-				current_value = $title.val(),
-				previous_value = $title.data( this.current_value_data_key ),
-				$parent = ( $this.hasClass( 'easy-support-videos-video-title' ) ) ? $this.parent() : $this,
+				$parent = ( $this.hasClass( 'easy-support-videos-video-title' ) || $this.hasClass( 'easy-support-videos-video-excerpt' ) ) ? $this.parents( '.easy-support-video' ) : $this,
+				$title = ( ! $this.hasClass( 'easy-support-videos-video-title' ) ) ? $parent.find( '.easy-support-videos-video-title' ) : $this,
+				$excerpt = ( ! $this.hasClass( 'easy-support-videos-video-excerpt' ) ) ? $parent.find( '.easy-support-videos-video-excerpt' ) : $this,
+				current_title_value = $title.val(),
+				previous_title_value = $title.data( this.current_value_data_key ),
 				$post_id = $parent.find( '.easy-support-videos-video-id' ),
 				post_id = $post_id.val(),
 				$spinner = $parent.find( '.easy-support-videos-video-title-spinner' ),
 				data = this.ajax.setupData( {
 					nonce: this.$el.find( '#easy_support_videos_nonce_edit' ).val(),
 					post_id: post_id,
-					title: current_value
+					title: current_title_value,
+					post_excerpt: $excerpt.val()
 				}, easy_support_videos.actions.edit, $this );
 
 			// Prevent default
 			event.preventDefault();
 
-			// Bail if the current value matches the previous value
-			if ( ! force && current_value === previous_value ) {
+			// Bail if we're not forcing and the current title value matches the previous title value
+			if ( ! force && current_title_value === previous_title_value ) {
 				return;
 			}
 
-			// Bail if the current value is empty
-			if ( ! current_value ) {
-				// Set the title back to the previous value
-				$title.val( previous_value );
+			// Bail if the current title value is empty
+			if ( ! current_title_value ) {
+				// Set the title back to the previous title value
+				$title.val( previous_title_value );
 
 				// Show a message
 				this.showMessage( easy_support_videos.l10n.video_title_empty );
@@ -692,7 +798,7 @@ var easy_support_videos = easy_support_videos || {};
 				abort: {
 					post_id: data.post_id
 				}
-			} ).process(); // TODO: .process( true )?
+			} ).process();
 		}, 500 ),
 		/**
 		 * This function deletes Easy Support Videos.
@@ -724,7 +830,7 @@ var easy_support_videos = easy_support_videos || {};
 				success: this.ajax.success.deleteVideo,
 				fail: this.ajax.fail.deleteVideo,
 				spinner: $spinner
-			} ).process(); // TODO: .process( true )?
+			} ).process();
 		},
 		/**
 		 * This function shows Easy Support Videos messages.
@@ -734,6 +840,15 @@ var easy_support_videos = easy_support_videos || {};
 				message_timer_delay = this.message_timer_delay,
 				$easy_support_videos_status_message = this.$el.find( '#easy-support-videos-status-message' ),
 				$easy_support_videos_status_message_message = $easy_support_videos_status_message.find( '.easy-support-videos-message' );
+
+			// If we have a message timer
+			if ( this.message_timer !== -1 ) {
+				// Stop the timer
+				clearTimeout( this.message_timer );
+
+				// Reset the current message timer delay
+				this.current_message_timer_delay = 0;
+			}
 
 			// Set the message
 			$easy_support_videos_status_message_message.html( message );
@@ -745,11 +860,20 @@ var easy_support_videos = easy_support_videos || {};
 			message_timer_delay += ( message.length > 160 ) ? this.message_timer_delay : 0;
 			message_timer_delay += ( message.length > 20 && message.length <= 160 ) ? ( 5000 * ( ( message.length - 20 ) / 140 ) ) : 0;
 
+			// Set the current message timer delay
+			this.current_message_timer_delay = message_timer_delay;
+
+			// Trigger the show message event event on the Easy Support Videos Backbone View element
+			this.$el.trigger( 'esv-show-message', [ this ] );
+
 			// Start the timer
 			this.message_timer = setTimeout( function() {
 				// Hide the message
 				self.hideMessage( false );
-			}, message_timer_delay );
+
+				// Reset the current message timer delay
+				self.current_message_timer_delay = 0;
+			}, this.current_message_timer_delay );
 		},
 		/**
 		 * This function hides Easy Support Videos messages.
@@ -771,13 +895,13 @@ var easy_support_videos = easy_support_videos || {};
 			clearTimeout( this.message_timer );
 		},
 		/**
-		 * This function edits the Easy Support Videos sidebar message(delay 500ms).
+		 * This function edits the Easy Support Videos sidebar message (delay 500ms).
 		 */
 		editSidebarMessage: _.debounce( function( event, $this ) {
 			// Defaults
 			$this = $this || $( event.currentTarget );
 
-			var self = this,
+			var self = this, // TODO: Future: Remove if not necessary
 				current_value = $this.val(),
 				previous_value = $this.data( this.current_value_data_key ),
 				$parent = $this.parents( '.easy-support-videos-sidebar-item-message' ),
@@ -815,8 +939,57 @@ var easy_support_videos = easy_support_videos || {};
 					option_name: data.option_name,
 					option_group: data.option_group
 				}
-			} ).process(); // TODO: .process( true )?
-		}, 500 )
+			} ).process();
+		}, 500 ),
+		/**
+		 * This function edits the Easy Support Videos video excerpt.
+		 */
+		editVideoExcerpt: function( event ) {
+			var $this = $( event.currentTarget ),
+				current_character_count = $this.val().length,
+				$parent = $this.parents( '.easy-support-video' ),
+				$easy_support_videos_video_excerpt_current_character_count = $parent.find( '.easy-support-videos-video-excerpt-current-character-count' );
+
+			// Set the Easy Support Videos video excerpt current character count
+			$easy_support_videos_video_excerpt_current_character_count.text( current_character_count );
+
+			// Call the "editVideo" function
+			this.editVideo( event, false, true );
+		},
+		/**
+		 * This function sets the Easy Support Videos contextual videos global video.
+		 */
+		setContextualVideosGlobalVideo: function( event, $this ) {
+			// Defaults
+			$this = $this || $( event.currentTarget );
+
+			var self = this, // TODO: Future: Remove if not necessary
+				$toggle_global_video = ( ! $this.hasClass( 'easy-support-videos-contextual-videos-set-global-video' ) ) ? $this.find( '.easy-support-videos-contextual-videos-set-global-video' ) : $this,
+				$parent = ( $this.hasClass( 'easy-support-videos-contextual-videos-set-global-video' ) ) ? $this.parents( '.easy-support-video' ) : $this,
+				$post_id = $parent.find( '.easy-support-videos-video-id' ),
+				post_id = $post_id.val(),
+				$spinner = $parent.find( '.easy-support-videos-video-title-spinner' ),
+				data = this.ajax.setupData( {
+					nonce: this.$el.find( '#easy_support_videos_nonce_edit' ).val(),
+					post_id: post_id,
+					set_global_video: $toggle_global_video.prop( 'checked' ),
+				}, easy_support_videos.actions.contextual_videos_set_global_video, $this );
+
+			// Show the spinner
+			$spinner.addClass( easy_support_videos.spinner.active_css_classes );
+
+			// Add item to the AJAX queue and process
+			this.ajax.queue.addItem( {
+				action: easy_support_videos.actions.contextual_videos_set_global_video,
+				data: data,
+				success: this.ajax.success.setContextualVideosGlobalVideo,
+				fail: this.ajax.fail.setContextualVideosGlobalVideo,
+				spinner: $spinner,
+				abort: {
+					post_id: data.post_id
+				}
+			} ).process();
+		}
 	} );
 
 	/**

@@ -1,6 +1,9 @@
 <?php
 	// Grab the Easy Support Videos options
 	$easy_support_videos_options = Easy_Support_Videos_Options::get_options();
+
+	// Grab the Easy Support Videos options defaults
+	$easy_support_videos_options_defaults = Easy_Support_Videos_Options::get_options_defaults();
 ?>
 
 <?php do_action( 'easy_support_videos_sidebar_item_message_before' ); ?>
@@ -31,11 +34,15 @@
 				<?php do_action( 'easy_support_videos_sidebar_item_message_content_before' ); ?>
 
 				<?php
-					// Apply the_content filter to the sidebar message
-					$easy_support_videos_options['sidebar']['message'] = apply_filters( 'the_content', $easy_support_videos_options['sidebar']['message'] );
-					$easy_support_videos_options['sidebar']['message'] = str_replace( ']]>', ']]&gt;', stripslashes( $easy_support_videos_options['sidebar']['message'] ) );
+					// If the sidebar message doesn't match the default sidebar message
+					if ( $easy_support_videos_options['sidebar']['message']!== $easy_support_videos_options_defaults['sidebar']['message'] ) {
+						// Apply the "the_content" filter to the sidebar message
+						$easy_support_videos_options['sidebar']['message'] = apply_filters( 'the_content', $easy_support_videos_options['sidebar']['message'] );
+						$easy_support_videos_options['sidebar']['message'] = str_replace( ']]>', ']]&gt;', stripslashes( $easy_support_videos_options['sidebar']['message'] ) );
 
-					echo $easy_support_videos_options['sidebar']['message'];
+						// Output the sidebar message
+						echo $easy_support_videos_options['sidebar']['message'];
+					}
 				?>
 
 				<?php do_action( 'easy_support_videos_sidebar_item_message_content_after' ); ?>

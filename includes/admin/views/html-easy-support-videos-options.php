@@ -5,8 +5,11 @@
 	<?php do_action( 'easy_support_videos_options_notifications' ); ?>
 
 	<?php
-		settings_errors( 'general' ); // General Settings Errors
-		settings_errors( Easy_Support_Videos_Options::$option_name ); // Easy Support Videos Settings Errors
+		// Settings Errors
+		settings_errors();
+
+		// Easy Support Videos Settings Errors
+		settings_errors( Easy_Support_Videos_Options::$option_name );
 	?>
 
 	<form method="post" action="options.php" enctype="multipart/form-data" id="easy-support-videos-options-form">
@@ -21,6 +24,8 @@
 			?>
 		</div>
 
+		<?php do_action( 'easy_support_videos_settings' ); ?>
+
 		<div id="easy-support-videos-options-uninstall-settings" class="easy-support-videos-options-settings easy-support-videos-options-uninstall-settings">
 			<?php
 				/**
@@ -29,8 +34,6 @@
 				do_settings_sections( Easy_Support_Videos_Options::$option_name . '_uninstall' );
 			?>
 		</div>
-
-		<?php do_action( 'easy_support_videos_settings' ); ?>
 
 		<p class="submit">
 			<input id="easy-support-videos-options-page" class="easy-support-videos-input easy-support-videos-hidden easy-support-videos-options-page" name="<?php echo Easy_Support_Videos_Options::$option_name; ?>[easy-support-videos-options-page]" type="hidden" value="1" />

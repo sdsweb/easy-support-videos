@@ -5,19 +5,62 @@
 /**
  * Notices
  */
-.easy-support-videos-wrap .notice {
+.easy-support-videos-wrap .notice,
+.about-wrap.easy-support-videos-wrap .notice,
+.about-wrap.easy-support-videos-wrap div.error,
+.about-wrap.easy-support-videos-wrap div.updated {
 	margin: 40px 0 .6em;
 	display: block !important;
 }
+.easy-support-videos-wrap .notice + .notice,
+.about-wrap.easy-support-videos-wrap .notice + .notice,
+.about-wrap.easy-support-videos-wrap .notice + div.error,
+.about-wrap.easy-support-videos-wrap .notice + div.updated,
+.about-wrap.easy-support-videos-wrap div.error + .notice,
+.about-wrap.easy-support-videos-wrap div.error + div.error,
+.about-wrap.easy-support-videos-wrap div.error + div.updated,
+.about-wrap.easy-support-videos-wrap div.updated + .notice,
+.about-wrap.easy-support-videos-wrap div.updated + div.error,
+.about-wrap.easy-support-videos-wrap div.updated + div.updated {
+	margin-top: 20px;
+}
 
-.easy-support-videos-options-upgrade-notice {
+.easy-support-videos-options-notice {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
-.easy-support-videos-options-upgrade-notice .dashicons {
+.easy-support-videos-options-notice .dashicons {
 	padding-top: 2px;
 	padding-right: 0.5em;
+}
+
+.easy-support-videos-options-notice .notice-dismiss {
+	padding-top: 17px;
+	padding-bottom: 17px;
+}
+
+.easy-support-videos-wrap .notice + .notice.easy-support-videos-options-view-setup-wizard-notice {
+	margin: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.easy-support-videos-options-setup-wizard-notice {
+	background: rgba( 255, 145, 58, 0.5);
+	border-left-color: #ff913a;
+}
+
+.easy-support-videos-options-setup-wizard-notice .notice-dismiss,
+.easy-support-videos-options-setup-wizard-notice .notice-dismiss:before {
+	font-size: 22px;
+	color: #b46b4b;
+}
+
+.easy-support-videos-options-setup-wizard-notice .notice-dismiss:hover:before,
+.easy-support-videos-options-setup-wizard-notice .notice-dismiss:active:before,
+.easy-support-videos-options-setup-wizard-notice .notice-dismiss:focus:before {
+	color: #875346;
 }
 
 /**

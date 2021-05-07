@@ -1,0 +1,424 @@
+/**
+ * Easy Support Videos - Contextual Videos
+ */
+
+/**
+ * Easy Support Videos
+ */
+#easy-support-videos-videos .easy-support-video-title {
+	font-weight: bold;
+	font-size: 1.125rem;
+	line-height: 1.25em;
+}
+
+/**
+ * Contextual Videos Icon
+ */
+#easy-support-videos-contextual-videos-widget {
+	width: 60px;
+	height: 60px;
+	position: fixed;
+	z-index: 2147483647;
+	bottom: 20px;
+	right: 20px;
+	cursor: pointer;
+
+	-webkit-animation-delay: 0.25s;
+	animation-delay: 0.25s;
+	-webkit-animation: easy-support-videos-contextual-videos-widget-appear 0.5s ease 0s 1 normal both;
+	animation: easy-support-videos-contextual-videos-widget-appear 0.5s ease 0s 1 normal both;
+}
+
+.modal-open #easy-support-videos-contextual-videos-widget {
+	z-index: 159900; /* Note: Below the WordPress media modal backdrop as of WordPress 5.4 */
+}
+
+#easy-support-videos-contextual-videos-icon-wrap {
+	width: 60px;
+	height: 60px;
+	background: #ff913a;
+	text-align: center;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 1px 5px 0, rgba(0, 0, 0, 0.15) 0 2px 25px 0;
+	position: relative;
+}
+
+.easy-support-videos-contextual-videos-icon {
+	width: 60px;
+	height: 60px;
+	color: #fff;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+	font-size: 32px;
+	line-height: 60px;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.easy-support-videos-contextual-videos-icon img {
+	height: auto;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	line-height: 1em;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
+}
+
+/* TODO: Future: Remove if not necessary */
+/*#easy-support-videos-contextual-videos-edit-icon {
+	font-size: 20px;
+	left: auto;
+	right: 10px;
+}*/
+
+/**
+ * Contextual Videos Widget Appear Animation keyframes
+ */
+@-webkit-keyframes easy-support-videos-contextual-videos-widget-appear {
+	0%{
+		opacity: 0;
+		transform: scale3d(0.25, 0.25, 0.25);
+	}
+	50%{
+		opacity: 1;
+		transform: scale3d(1.5, 1.5, 1.5);
+	}
+	75%{
+		opacity: 1;
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+@keyframes easy-support-videos-contextual-videos-widget-appear {
+	0%{
+		opacity: 0;
+		transform: scale3d(0.25, 0.25, 0.25);
+	}
+	50%{
+		opacity: 1;
+		transform: scale3d(1.5, 1.5, 1.5);
+	}
+	75%{
+		opacity: 1;
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+/**
+ * Contextual Videos Modal
+ */
+#easy-support-videos-contextual-videos-modal {
+	width: 350px;
+	/* Note: 152px is derived from the bottom position (100px), the WordPress admin bar (32px) and a 20px "margin" - ( 100 + 32 + 20 ) = 152 */
+	height: calc(100% - 152px);
+	min-height: 250px;
+	max-height: 600px;
+	background: #fff;
+	position: fixed;
+	right: 20px;
+	bottom: 100px;
+	z-index: 2147483647;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+	opacity: 1;
+	border-radius: 8px;
+	display: none;
+
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	-webkit-transition: top 0.1s ease-out;
+	transition: top 0.1s ease-out;
+}
+
+.modal-open #easy-support-videos-contextual-videos-modal {
+	z-index: 159900; /* Note: Below the WordPress media modal backdrop as of WordPress 5.4 */
+}
+
+#easy-support-videos-contextual-videos-modal *,
+#easy-support-videos-contextual-videos-modal *:before,
+#easy-support-videos-contextual-videos-modal *:after {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded {
+	/* Note: 40px is derived from left and right position (20px away from the edge of the screen) */
+	width: calc(50% - 40px);
+	max-height: 100%;
+}
+
+
+#easy-support-videos-contextual-videos-modal-actions {
+	height: 100%;
+	padding: 1.5em 0;
+	position: absolute;
+	top: 0;
+	left: calc( -20px - 1em ); /* Note: Default Dashicons font size and default margin on right side of icon */
+}
+
+#easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action {
+	margin: 0.5em 0;
+	padding: 0.5em;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-right: none;
+	border-radius: 8px 0 0 8px;
+	box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+	display: block;
+	text-decoration: none;
+	position: relative;
+	right: 0;
+
+	-webkit-transition: right 0.15s ease-out;
+	transition: right 0.15s ease-out;
+}
+
+#easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action:hover {
+	right: calc( 100% - 20px - 1em ); /* Note: Default Dashicons font size, default padding on individual actions, and default margin on right side of icon */
+}
+
+#easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action:first-child {
+	margin-top: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action:last-child {
+	margin-bottom: 0;
+}
+
+#easy-support-videos-contextual-videos-modal #easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action.easy-support-videos-contextual-videos-modal-esv_preview-action {
+	display: none;
+}
+
+#easy-support-videos-contextual-videos-modal.easy-support-videos-has-videos #easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action.easy-support-videos-contextual-videos-modal-esv_preview-action,
+#easy-support-videos-contextual-videos-modal.easy-support-videos-has-global-video #easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action.easy-support-videos-contextual-videos-modal-esv_preview-action {
+	display: block;
+}
+
+#easy-support-videos-contextual-videos-modal-actions .easy-support-videos-contextual-videos-modal-action .easy-support-videos-contextual-videos-modal-action-icon {
+	margin-right: 0.5em;
+}
+
+#easy-support-videos-contextual-videos-modal-container {
+	height: 100%;
+	position: relative;
+
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-moz-flex-flow: column;
+	-ms-flex-flow: column;
+	-webkit-flex-flow: column;
+	flex-flow: column;
+	-moz-justify-content: center;
+	-ms-justify-content: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-moz-flex-direction: column;
+	-ms-flex-direction: column;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+}
+
+#easy-support-videos-contextual-videos-modal-header {
+	width: 100%;
+	padding: 20px;
+	color: #fff;
+	background: #ff913a;
+	border-radius: 8px 8px 0 0;
+	position: relative;
+}
+
+#easy-support-videos-contextual-videos-modal-title {
+	margin-top: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-title h1 {
+	max-width: 85%; /* Note: This is to prevent the modal buttons from overlapping on top of this heading */
+	margin: 0;
+	color: #fff;
+	font-size: 1.125rem;
+	font-weight: 600;
+	line-height: 1.25em;
+}
+
+#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded #easy-support-videos-contextual-videos-modal-title h1 {
+	max-width: 90%;
+}
+
+#easy-support-videos-contextual-videos-modal-header-description {
+	margin-top: 0.5em;
+	margin-bottom: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-close {
+	padding: 2px;
+	color: #fff;
+	background: transparent;
+	border: none;
+	position: absolute;
+	top: 17px;
+	right: 5px;
+	cursor: pointer;
+	outline: none;
+}
+
+#easy-support-videos-contextual-videos-modal-close:active,
+#easy-support-videos-contextual-videos-modal-close:focus {
+	outline: none;
+}
+
+.easy-support-videos-can-edit #easy-support-videos-contextual-videos-modal-close {
+	top: 5px;
+}
+
+#easy-support-videos-contextual-videos-modal-close .dashicons {
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+
+#easy-support-videos-contextual-videos-modal-expand {
+	width: 32px;
+	height: 24px;
+	padding: 2px;
+	color: #fff;
+	background: transparent;
+	border: none;
+	position: absolute;
+	top: 17px;
+	right: 32px;
+	cursor: pointer;
+	outline: none;
+	box-sizing: content-box;
+}
+
+.easy-support-videos-can-edit #easy-support-videos-contextual-videos-modal-expand {
+	top: 5px;
+}
+
+#easy-support-videos-contextual-videos-modal-expand .easy-support-videos-contextual-videos-modal-expand-icon {
+	width: 22px;
+	height: 14px;
+	border: 2px solid;
+	line-height: 1em;
+	display: inline-block;
+	position: relative;
+	top: 1px;
+	box-sizing: border-box;
+
+	-webkit-transition: all 0.25s ease-out;
+	transition: all 0.25s ease-out;
+}
+
+#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded #easy-support-videos-contextual-videos-modal-expand .easy-support-videos-contextual-videos-modal-expand-icon {
+	width: 20px;
+	height: 12px;
+	top: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-content {
+	width: 100%;
+	height: 80%;
+	background: #fff;
+	border-radius: 0 0 8px 8px;
+	position: relative;
+
+	flex-grow: 2;
+}
+
+#easy-support-videos-contextual-videos-wrap {
+	height: 100%;
+}
+
+#easy-support-videos-contextual-videos-modal-content .easy-support-videos-wrap {
+	max-width: none;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+/* Easy Support Videos Page Title */
+#easy-support-videos-contextual-videos-modal-content .easy-support-videos-wrap h1 {
+	display: none;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-flex-wrap {
+	height: 100%;
+}
+
+#easy-support-videos-contextual-videos-modal-content .easy-support-videos-col.easy-support-videos-col.easy-support-videos {
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+	overflow: auto;
+	border-radius: 0 0 8px 8px;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos {
+	padding: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video {
+	padding: 0 0 2rem;
+}
+
+#easy-support-videos-contextual-videos-modal-content .easy-support-videos-wrap:not(.easy-support-videos-can-edit) #easy-support-videos-videos .easy-support-video:last-of-type {
+	padding-bottom: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-videos-video-title {
+	width: 100%;
+	padding: 0.25em;
+	font-size: 1rem;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video .easy-support-video-content p {
+	margin-top: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video .easy-support-video-title {
+	font-weight: 600;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video .easy-support-videos-video-excerpt {
+	padding: 0.25em;
+	font-size: 1rem;
+}
+
+#easy-support-videos-contextual-videos-modal:not(.easy-support-videos-contextual-videos-modal-expanded) #easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video .easy-support-videos-video-excerpt {
+	min-height: 11em;
+}
+
+#easy-support-videos-contextual-videos-modal-content #easy-support-videos-videos .easy-support-video .easy-support-video-excerpt p {
+	margin-bottom: 0;
+}
+
+#easy-support-videos-contextual-videos-modal-content .easy-support-videos-col.easy-support-videos-sidebar {
+	display: none;
+}
+
+
+/**
+ * Responsive Structure
+ */
+@media (max-width: 960px) {
+	#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded {
+		/* Note: 40px is derived from left and right position (20px away from the edge of the screen) */
+		width: calc(80% - 40px);
+	}
+}
+
+@media (max-width: 768px) {
+	#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded {
+		/* Note: 40px is derived from left and right position (20px away from the edge of the screen) */
+		width: calc(100% - 40px);
+	}
+
+	#easy-support-videos-contextual-videos-modal.easy-support-videos-contextual-videos-modal-expanded #easy-support-videos-contextual-videos-modal-title h1 {
+		max-width: 85%;
+	}
+}

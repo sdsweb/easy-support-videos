@@ -4,7 +4,7 @@
  *
  * @class Easy_Support_Videos_Admin_Options
  * @author Slocum Studio
- * @version 1.0.2
+ * @version 2.0.0
  * @since 1.0.0
  */
 
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 		/**
 		 * @var string
 		 */
-		public $version = '1.0.2';
+		public $version = '2.0.0';
 
 		/**
 		 * @var string
@@ -28,6 +28,11 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 		 * @var string
 		 */
 		public static $sub_menu_page_prefix = 'support-videos_page_';
+
+		/**
+		 * @var string
+		 */
+		public static $capability = 'manage_options';
 
 		/**
 		 * @var Easy_Support_Videos_Admin_Options, Instance of the class
@@ -59,8 +64,9 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) ); // Admin Enqueue Scripts
 			add_action( 'admin_init', array( $this, 'admin_init' ) ); // Admin Init
 
-			// Easy Support Videos
+			// Easy Support Videos Hooks
 			add_action( 'easy_support_videos_options_notifications', array( $this, 'easy_support_videos_options_notifications' ) ); // Easy Support Videos - Options Notifications
+			add_action( 'easy_support_videos_options_notifications', array( $this, 'easy_support_videos_options_notifications_setup_wizard' ), 20 ); // Easy Support Videos - Options Notifications (Setup Wizard)
 		}
 
 		/**
@@ -85,18 +91,18 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 		 */
 		public function admin_menu() {
 			// Easy Support Videos Admin Options Page
-			self::$sub_menu_page = add_submenu_page( Easy_Support_Videos_Post_Types::get_easy_support_videos_menu_page(), __( 'Options', 'easy-support-videos' ), __( 'Options', 'easy-support-videos' ), 'manage_options', self::get_sub_menu_page(), array( $this, 'render' ) );
+			self::$sub_menu_page = add_submenu_page( Easy_Support_Videos_Post_Types::get_easy_support_videos_menu_page(), __( 'Options', 'easy-support-videos' ), __( 'Options', 'easy-support-videos' ), self::$capability, self::get_sub_menu_page(), array( $this, 'render' ) );
 		}
 
 		/**
 		 * This function enqueues scripts and styles on the Easy Support Videos Options admin page.
 		 */
 		public function admin_enqueue_scripts( $hook ) {
-			// Bail if we're not on the sub-menu page
-			if ( $hook !== self::get_sub_menu_page( false ) )
+			// Bail if we're not on the sub-menu page and we're not on the Easy Support Videos page
+			if ( $hook !== self::get_sub_menu_page( false ) && $hook !== Easy_Support_Videos_Post_Types::get_easy_support_videos_menu_page( false ) )
 				return;
 
-			// Stylesheet
+			// Easy Support Videos Admin Options Stylesheet
 			wp_enqueue_style( 'easy-support-videos-admin-options', Easy_Support_Videos::plugin_url() . '/assets/css/easy-support-videos-admin-options.css', false, Easy_Support_Videos::$version );
 		}
 
@@ -134,6 +140,23 @@ if ( ! class_exists( 'Easy_Support_Videos_Admin_Options' ) ) {
 				</p>
 			</div>
 		<?php
+		}
+
+		/**
+		 * This function adds the setup wizard Easy Support Videos options notifications.
+		 */
+		public function easy_support_videos_options_notifications_setup_wizard() {
+			// If the Easy Support Videos setup wizard class doesn't exist
+			if ( ! class_exists( 'Easy_Support_Videos_Setup_Wizard' ) ) :
+		?>
+				<div class="notice easy-support-videos-options-notice easy-support-videos-options-view-setup-wizard-notice">
+					<p>
+						<span class="dashicons dashicons-admin-tools"></span>
+						<?php printf( __( '<a href="%1$s">%2$s</a>','easy-support-videos' ), esc_url( admin_url( sprintf( 'admin.php?page=%1$s&esv-setup-wizard=1', Easy_Support_Videos_Admin_Options::get_sub_menu_page() ) ) ), __( 'View Setup Wizard', 'easy-support-videos' ) ); ?>
+					</p>
+				</div>
+		<?php
+			endif;
 		}
 
 

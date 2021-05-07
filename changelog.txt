@@ -2,13 +2,19 @@
 Plugin: Easy Support Videos
 Author: Slocum Design Studio
 Author URI: https://slocumthemes.com/
-Current Version: 1.0.6
+Current Version: 2.0.0
 ==========================================
 
 
-1.0.6 // April 10 2020
----------------------
-- Tested and verified WordPress 5.4 support
+2.0.0 // May 07 2021
+--------------------
+- Introduce contextual videos
+- Introduce setup wizard
+- Introduce video descriptions (excerpts, limited to 300 characters)
+- Introduce ability to preview videos as a "viewer" when logged in as an "editor"
+- Added logic to ensure the default sidebar message was not displayed to "viewers"
+- Adjusted the delete icon (use dashicons-trash)
+- Minified assets (JS/CSS)
 
 1.0.5 // May 20 2019
 --------------------

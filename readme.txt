@@ -3,10 +3,10 @@ Contributors: slocumstudio
 Donate link:
 Tags: videos, support, youtube, vimeo, wistia, admin help, dashboard
 Requires at least: 4.3
-Tested up to: 5.4
-Stable tag: 1.0.6
+Tested up to: 5.7.1
+Stable tag: 2.0.0
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Easy Support Videos for embedding helpful tutorials, training videos, and screencasts in the Admin dashboard. Works with YouTube, Vimeo, Wistia, VideoPress, and more!
 
@@ -37,7 +37,7 @@ Easy Support Videos is perfect for supporting your client or website user, throu
 > * Create many video pages
 > * Change admin link placement
 > * Remove the ratings slug
-> * **[Get Easy Support Videos Pro](https://slocumthemes.com/wordpress-plugins/easy-support-videos/?utm_source=easy-support-videos&utm_medium=link&utm_content=wp-org-readme-upgrade&utm_campaign=easy-support-videos)**
+> * **[Get Easy Support Videos Pro](https://easysupportvideos.com/pricing/?utm_source=easy-support-videos&utm_medium=link&utm_content=wp-org-readme-upgrade&utm_campaign=easy-support-videos)**
 
 [View Easy Support Videos on Github](https://github.com/sdsweb/easy-support-videos/) | [Issue Tracker](https://github.com/sdsweb/easy-support-videos/issues/)
 
@@ -73,6 +73,16 @@ In the settings page of Easy Support Videos, you can control who can edit and vi
 2. Easy Support Videos Options
 
 == Changelog ==
+
+= 2.0.0 // May 07 2021 =
+------------------------
+* Introduce contextual videos
+* Introduce setup wizard
+* Introduce video descriptions (excerpts, limited to 300 characters)
+* Introduce ability to preview videos as a "viewer" when logged in as an "editor"
+* Added logic to ensure the default sidebar message was not displayed to "viewers"
+* Adjusted the delete icon (use dashicons-trash)
+* Minified assets (JS/CSS)
 
 = 1.0.5 // May 20 2019 =
 -------------------------
