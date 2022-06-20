@@ -3,7 +3,7 @@ Contributors: slocumstudio
 Donate link:
 Tags: videos, support, youtube, vimeo, wistia, admin help, dashboard
 Requires at least: 4.3
-Tested up to: 5.7.1
+Tested up to: 6.0.0
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
